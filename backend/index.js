@@ -94,6 +94,48 @@ app.post('/api/flashcards', async (req, res) => {
   }
 });
 
+  // Route to create a new forum topic
+app.post('/api/topics', async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    const newTopic = new ForumTopic({ title, description });
+    await newTopic.save();
+    res.status(201).json(newTopic);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create topic' });
+  }
+});
+
+// Route to fetch all forum topics
+app.get('/api/topics', async (req, res) => {
+  try {
+    const topics = await ForumTopic.find().sort({ created_at: -1 });
+    res.status(200).json(topics);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch topics' });
+  }
+});
+
+// Route to add a post (reply) to a topic
+app.post('/api/topics/:id/posts', async (req, res) => {
+  try {
+    const { username, content } = req.body;
+    const topic = await ForumTopic.findById(req.params.id);
+
+    if (!topic) {
+      return res.status(404).json({ error: 'Topic not found' });
+    }
+
+    const newPost = { username, content };
+    topic.posts.push(newPost);
+    await topic.save();
+
+    res.status(201).json(topic);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add post' });
+  }
+});
+
 
 
   app.post('/upload', upload.single('file'), async (req, res) => {

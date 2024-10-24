@@ -2,12 +2,17 @@ const mongoose = require('mongoose');
 
 // Define the schema for flashcard folders
 const FlashcardFolderSchema = new mongoose.Schema({
-  name: String,
-  userId: String, // The Firebase UID of the user who owns the folder
-  flashcardCount: Number, // Optional: Track how many flashcards are in the folder
+  name: String,  // Folder name
+  userId: String, // Firebase UID of the folder owner
+  flashcards: [
+    {
+      question: String,
+      answer: String
+    }
+  ], // Array of flashcards (question and answer)
 });
 
-// Create the model
 const FlashcardFolder = mongoose.model('FlashcardFolder', FlashcardFolderSchema);
 
 module.exports = FlashcardFolder;
+

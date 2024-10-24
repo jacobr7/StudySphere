@@ -69,6 +69,33 @@ module.exports = { admin, bucket }; //Export admin and bucket so they can be use
     }
   });
 
+
+// Route to add flashcard
+app.post('/api/flashcards', async (req, res) => {
+  const { folderId, question, answer } = req.body; // Get the folder ID and flashcard data from the request body
+
+  try {
+    // Find the folder by ID
+    const folder = await FlashcardFolder.findById(folderId);
+    
+    if (!folder) {
+      return res.status(404).json({ error: 'Folder not found' });
+    }
+
+    // Add the new flashcard to the folder's flashcards array
+    folder.flashcards.push({ question, answer });
+
+    // Save the updated folder
+    await folder.save();
+
+    res.status(201).json(folder); // Return the updated folder with the new flashcard
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add flashcard' });
+  }
+});
+
+
+
   app.post('/upload', upload.single('file'), async (req, res) => {
     //upload.single('file') finds a form field in html with the name 'file'
     //When uploaded successfully, multer will add file details to req object which can be access for file information

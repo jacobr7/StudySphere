@@ -57,6 +57,18 @@ module.exports = { admin, bucket }; //Export admin and bucket so they can be use
     }
   });
 
+  // New Route to get flashcard folders based on the logged-in user
+  app.get('/api/flashcardfolders', async (req, res) => {
+    const userId = req.query.userId;  // Get userId from the query params
+  
+    try {
+      const folders = await FlashcardFolder.find({ userId: userId }); // Retrieve flashcard folders from MongoDB
+      res.json(folders);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch folders' });
+    }
+  });
+
   app.post('/upload', upload.single('file'), async (req, res) => {
     //upload.single('file') finds a form field in html with the name 'file'
     //When uploaded successfully, multer will add file details to req object which can be access for file information

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors'); // Import cors
 const multer = require('multer')
 const mongoose = require('./db'); // Import the MongoDB connection
-const Note = require('./models/Note'); // Import the Note model
+const FileModel = require('./models/FileModel'); // Import the Note model
 
 const admin = require("firebase-admin");//Import firebase admin SDK
 const serviceAccount = require("./config/firebase-admin.json"); // Import the service account key
@@ -36,27 +36,7 @@ module.exports = { admin, bucket }; //Export admin and bucket so they can be use
     res.send('Backend is working!');
   });
 
-  // Route to get all notes from the database
-  app.get('/notes', async (req, res) => {
-    try {
-      const notes = await Note.find(); // Retrieve all notes from MongoDB
-      res.json(notes);
-    } catch (error) {
-      res.status(500).json({ message: 'Error retrieving notes' });
-    }
-  });
-
-  // Route to add a new note to the database
-  app.post('/notes', async (req, res) => {
-    try {
-      const newNote = new Note(req.body); // Create a new note using the model
-      const savedNote = await newNote.save(); // Save the note to MongoDB
-      res.status(201).json(savedNote);
-    } catch (error) {
-      res.status(500).json({ message: 'Error adding note' });
-    }
-  });
-
+  //FlashCard
   // New Route to get flashcard folders based on the logged-in user
   app.get('/api/flashcardfolders', async (req, res) => {
     const userId = req.query.userId;  // Get userId from the query params
@@ -136,11 +116,23 @@ app.post('/api/topics/:id/posts', async (req, res) => {
   }
 });
 
+//NoteSharing
+//This is to retrieve all notes
+app.get('/files', async (req, res) => {
+  try {
+    const files = await FileModel.find(); // Retrieve all files from MongoDB
+    res.status(200).json(files); // Send the files as a JSON response
+  } catch (error) {
+    console.error('Error retrieving files:', error);
+    res.status(500).json({ error: 'Failed to retrieve files.' });
+  }
+});
 
-
+//This is for uploading of file
   app.post('/upload', upload.single('file'), async (req, res) => {
     //upload.single('file') finds a form field in html with the name 'file'
     //When uploaded successfully, multer will add file details to req object which can be access for file information
+    try{
     const blob = bucket.file(req.file.originalname);
     const blobStream = blob.createWriteStream({ //Create a writable stream that write data to blob in firebase storage
       resumable: false, // Whether the upload is resumable or not
@@ -154,16 +146,28 @@ app.post('/api/topics/:id/posts', async (req, res) => {
   
     blobStream.on('finish', async () => { //Listen for events in this case when finish uploading
       // Get the download URL
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${blob.name}?alt=media`;
+
+      //Save Url to MongoDB
+      const newFile = new FileModel({
+        filename: req.file.originalname,
+        url: publicUrl
+      })
+      //Wait for file to be saved into mongodb
+      const savedFile = await newFile.save();
   
       // Optional: Make the file publicly accessible
-      //await blob.makePublic();
+      await blob.makePublic();
   
       res.status(200).send({ message: 'File uploaded successfully', url: publicUrl });
     });
   
     blobStream.end(req.file.buffer);
-  });
+  } catch(error) {
+    console.log('Upload endpoint error:', error);
+    res.status(500).json({ error: 'An error occurred during upload.' });
+  }
+  })
 
 
 

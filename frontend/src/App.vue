@@ -1,9 +1,3 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import NoteList from './components/NoteList.vue'
-import FileUpload from './components/FileUpload.vue'
-</script>
-
 <template>
   <!--
   <FileUpload/>
@@ -14,7 +8,7 @@ import FileUpload from './components/FileUpload.vue'
   <!-- Navigation links using <router-link> for smooth routing -->
 
   <router-link to="/" class="nav-link">Home</router-link> |
-  <router-link to="/about" class="nav-link">About</router-link>
+  <router-link to="/notesharing" class="nav-link">NoteSharing</router-link>
 
   <!-- router-view is where the current page component will render -->
   <router-view />

@@ -2,7 +2,7 @@
 //1)Import necessary functions and components
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../pages/Home.vue';
-import About from '../pages/About.vue';
+import Notesharing from '../pages/Notesharing.vue';
 
 // 2. Define the routes
 const routes = [
@@ -11,7 +11,8 @@ const routes = [
     name: 'Home',   // Optional: Used to refer to the route programmatically
     component: Home      // The component to render when this path is visited
     },
-  { path: '/about', name: 'About', component: About },
+  { path: '/notesharing', name: 'Notesharing', component: Notesharing },
+  
 ];
 
 // 3. Create the router instance

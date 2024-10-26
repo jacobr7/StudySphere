@@ -5,22 +5,25 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StudySphere</title>
+    <style>
+      /* Basic CSS for layout management */
+      body, html {
+        margin: 0; /* Remove default margin */
+        padding: 0;
+        height: 100%; /* Full height */
+        font-family: Arial, sans-serif; /* Optional font */
+      }
+
+      #app {
+        height: 100%; /* Ensure app div takes full height */
+        width: 100%;
+        display: flex; /* Use flexbox for layout */
+        flex-direction: column; /* Arrange children vertically */
+      }
+    </style>
   </head>
   <body>
     <div id="app">
-    <header>
-        <h1>Welcome to SMU Event Hub</h1>
-        <p>Find and sign up for SMU study-related events here!</p>
-    </header>
-
-    <section id="event-list">
-        <!-- Dynamically populated events -->
-    </section>
-
-    <!-- Google Form link -->
-    <footer>
-        <a href="https://forms.google.com/your-google-form-link" target="_blank">Submit Your Event (Exco/Student Admin)</a>
-    </footer>
     <script type="module" src="/src/main.js"></script>
     </div>  
   </body>

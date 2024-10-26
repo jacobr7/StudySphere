@@ -1,5 +1,6 @@
 <template>
   <!--
+  <EventPage/>
   <FileUpload/>
   <NoteList/>
   <HelloWorld msg="Vite + Vue" />

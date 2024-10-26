@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+
+    <!-- Link to your custom Firebase initialization and auth script -->
+    <script src="../backend/login.js"></script>
+
+
+</head>
+<body>
+    <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-cover">
+        <div class="row justify-content-center w-100">
+            <div class="col-12 col-sm-10 col-md-10 col-lg-8 col-xl-7">
+                <div class="login-box shadow-lg">
+                    <div class="row no-gutters">
+                        <!-- Left Image Section -->
+                        <div class="col-md-4 d-none d-md-block">
+                            <img src="images/downloads2.webp" alt="Side Image" class="img-fluid h-100" 
+                                 style="border-top-left-radius: 3px; border-bottom-left-radius: 4px;">
+                        </div>
+                        <!-- Right Login Form Section -->
+                        <div class="col-md-8 p-5">
+                            <h2 class="mb-4">Login</h2>
+                            <form onsubmit="login(event)">
+                                <div class="form-group">
+                                    <label for="email">Username or email address</label> <!-- Label added -->
+                                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label> <!-- Label added -->
+                                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                                </div>
+                
+                                <!-- Forgot Password Link -->
+                                <div class="text-right mt-2"> <!-- Aligned to the right -->
+                                    <a href="#" class="forgot-password-link">Forgot Password?</a>
+                                </div>
+                
+                                <!-- Login Button -->
+                                <button type="submit" class="btn btn-primary btn-block custom-login-btn mt-3">Login</button>
+                            </form>
+                
+                            <!-- Error message -->
+                            <div id="login-error-message" class="text-danger mt-3"></div>
+                            
+                            <p class="text-center mt-4">Don't have an account? <a href="register.html">Create Account</a></p>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <!-- <script>
+        // Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCSTt_BtYR07qzKHm9pBgJ93RARJjt-HNA",
+            authDomain: "studysphere-8f8ae.firebaseapp.com",
+            projectId: "studysphere-8f8ae",
+            storageBucket: "studysphere-8f8ae.appspot.com",
+            messagingSenderId: "1043087075619",
+            appId: "1:1043087075619:web:10ddd930f52125a0960496",
+            measurementId: "G-Q4FTB6VJEC"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Login function
+        function login(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var errorMessage = document.getElementById('login-error-message');
+
+            // Clear previous errors
+            errorMessage.innerText = "";
+
+            // Firebase login
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+
+
+                    //--------------------------------------------------------------------------------------------
+                    // Login successful
+                    window.location.href = "../flashcardfolder.html"; // Redirect to dashboard or homepage 
+                    //--------------------------------------------------------------------------------------------
+
+
+
+                })
+                .catch((error) => {
+                    var errorCode = error.code;
+                    var errorText = error.message;
+
+                    // Custom error handling
+                    if (errorCode === 'auth/user-not-found') {
+                        errorMessage.innerText = "No user found with this email.";
+                    } else {
+                        errorMessage.innerText = "Incorrect username or password.";
+                    }
+                });
+        }
+    </script> -->
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

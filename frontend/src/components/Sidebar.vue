@@ -9,7 +9,7 @@
         <button type="button" class="btn btn-primary">
             Your Notes
         </button>
-        <button type="button" class="btn btn-primary">
+        <button @click="openUploadModel" type="button" class="btn btn-primary">
             Upload Notes
         </button>
         
@@ -25,7 +25,13 @@
     name: 'Sidebar',
     components: {
         SearchBar,
-  }};
+  },
+    methods : {
+      openUploadModel(){
+        this.$emit('open-upload-modal');//Emit event to parent
+      }
+    }
+};
 
   </script>
   

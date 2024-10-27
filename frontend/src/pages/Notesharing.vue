@@ -19,9 +19,10 @@
 </template>
 
 <script>
-import FileUpload from '../components/FileUpload.vue'
+import FileUpload from '../components/FileUpload.vue';
 import FileList from '../components/FileList.vue';
 import Sidebar from '../components/Sidebar.vue';
+import UploadModal from '../components/UploadModal.vue';
 
 export default {
   name: 'Notesharing',
@@ -29,6 +30,19 @@ export default {
     FileUpload, // Register the FileUpload component
     FileList,
     Sidebar,
+    UploadModal,
+  },
+  data(){
+    return{
+      showModal: false,
+    };
+  },
+  methods: {
+    handleUpload(fileData){
+      console.log('File Data:', fileData)
+      //Handle Upload Logic
+      this.showModal = false;
+    }
   }
 };
 </script>

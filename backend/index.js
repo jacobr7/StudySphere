@@ -29,6 +29,26 @@ admin.initializeApp({
 const bucket = admin.storage().bucket();
 module.exports = { admin, bucket }; //Export admin and bucket so they can be used in other parts of application (Share Functionality)
 
+//Middleware to verify firebase tokens(Have not test)
+//req header need to have token(need to set frontend to send this)
+
+const verifyFirebaseToken = async (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+
+  if (!token) {
+      return res.status(403).send('A token is required for authentication');
+  }
+
+  try {
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      req.userId = decodedToken.uid; // Attach user ID to the request object
+      next();
+  } catch (error) {
+      console.error('Error verifying token:', error);
+      return res.status(401).send('Invalid Token');
+  }
+};
+
 //EndPoints
 
   // Test route to check if backend works
@@ -128,7 +148,65 @@ app.get('/files', async (req, res) => {
   }
 });
 
-//This is for uploading of file
+//This is to delete files(Havent Test)
+//req needs filename
+app.delete('/files', async (req, res) => {
+  const { filename } = req.body; //Send the filename through request body
+
+  try {
+    // Create a reference to the file in Firebase Storage using the filename
+    const file = bucket.file(filename);
+
+    // Delete the file from Firebase Storage
+    await file.delete();
+
+    // Now delete the corresponding document from MongoDB
+    const deletedFile = await FileModel.findOneAndDelete({ filename });
+
+    if (!deletedFile) {
+        return res.status(404).json({ error: 'File not found in database.' });
+    }
+
+    res.status(200).json({ message: 'File deleted successfully', deletedFile });
+} catch (error) {
+    console.error('Error deleting file:', error);
+    res.status(500).json({ error: 'Failed to delete file.' });
+}
+});
+
+//This is to retrieve notes of a certain coursecode(Have not test)
+//req need courseCode
+app.get('/files/courses/:courseCode', async (req, res) => {
+  const courseCode = req.params.courseCode;//Get Course Code from request parameter
+
+  try{
+    const files = await FileModel.find({ courseCode : courseCode});
+
+    res.status(200).json(files)
+
+  }
+  catch(error){
+    console.log('Error retrieving files by course code:', error);
+    res.status(500).json({ error: 'Failed to retrieve files by course code.' });
+  }
+})
+
+//This is to retrieve notes of a certain person(Have not test)
+//req need userId which should be taken from middleware
+app.get('/files/user-notes', verifyFirebaseToken, async (req, res) => {
+  const userId = req.userId; // Get the user ID from the request object
+
+  try {
+      const files = await FileModel.find({ userId }); // Query notes for the user ID
+      res.status(200).json(files); // Respond with the user's notes
+  } catch (error) {
+      console.error('Error retrieving user files:', error);
+      res.status(500).json({ error: 'Failed to retrieve files.' });
+  }
+});
+
+
+//This is for uploading of file 
   app.post('/upload', upload.single('file'), async (req, res) => {
     //upload.single('file') finds a form field in html with the name 'file'
     //When uploaded successfully, multer will add file details to req object which can be access for file information
@@ -168,6 +246,54 @@ app.get('/files', async (req, res) => {
     res.status(500).json({ error: 'An error occurred during upload.' });
   }
   })
+
+//This is the updated uploading of file but have not test yet, same as previous
+//req need file, filename(extract from file), courseCode, userId from middleware
+app.post('/upload', verifyFirebaseToken, upload.single('file'), async (req, res) => {
+
+  const { courseCode } = req.body//this is basically courseCode = req.body.courseCode
+
+  //upload.single('file') finds a form field in html with the name 'file'
+  //When uploaded successfully, multer will add file details to req object which can be access for file information
+  try{
+  const blob = bucket.file(req.file.originalname);
+  const blobStream = blob.createWriteStream({ //Create a writable stream that write data to blob in firebase storage
+    resumable: false, // Whether the upload is resumable or not
+    contentType: req.file.mimetype,
+  });
+
+  blobStream.on('error', (err) => { //Listen for events in this case when upload fails
+    console.error('Error uploading file:', err);
+    res.status(500).send('Error uploading file.');
+  });
+
+  blobStream.on('finish', async () => { //Listen for events in this case when finish uploading
+    // Get the download URL
+    const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${blob.name}?alt=media`;
+
+    //Save Url to MongoDB
+    const newFile = new FileModel({
+      filename: req.file.originalname,
+      url: publicUrl,
+      userId: req.userId,
+      courseCode: courseCode
+    })
+    //Wait for file to be saved into mongodb
+    const savedFile = await newFile.save();
+
+    // Optional: Make the file publicly accessible
+    await blob.makePublic();
+
+    res.status(200).send({ message: 'File uploaded successfully', url: publicUrl });
+  });
+
+  blobStream.end(req.file.buffer);
+} catch(error) {
+  console.log('Upload endpoint error:', error);
+  res.status(500).json({ error: 'An error occurred during upload.' });
+}
+})
+
 
 
 

@@ -1,6 +1,9 @@
 <template>
   <div class="note-sharing">
-    <Sidebar/>
+    <Sidebar @open-upload-modal="openUploadModel"/>
+
+    <UploadModal :isVisible="isModalVisible" @close="closeUploadModal"/>
+
     <!-- Main content Area -->
     <div class="content-area">
       <h1>
@@ -26,22 +29,23 @@ import UploadModal from '../components/UploadModal.vue';
 
 export default {
   name: 'Notesharing',
+  data(){
+    return{
+      isModalVisible: false,
+    }
+  },
   components: {
-    FileUpload, // Register the FileUpload component
+    FileUpload,
     FileList,
     Sidebar,
     UploadModal,
   },
-  data(){
-    return{
-      showModal: false,
-    };
-  },
   methods: {
-    handleUpload(fileData){
-      console.log('File Data:', fileData)
-      //Handle Upload Logic
-      this.showModal = false;
+    openUploadModel(){
+      this.isModalVisible = true;
+    },
+    closeUploadModal(){
+      this.isModalVisible = false;
     }
   }
 };

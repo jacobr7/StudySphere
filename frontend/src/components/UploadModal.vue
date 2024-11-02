@@ -27,6 +27,10 @@
 </template>
 
 <script>
+import { auth } from '../firebase.js'; // Adjust this path to your firebase.js
+import { getIdToken } from 'firebase/auth'; // Import getIdToken for token retrieval
+import axios from 'axios';
+
 export default {
   name: 'UploadModal',
   props: {
@@ -107,9 +111,13 @@ export default {
       formData.append('courseCode', this.courseCode);
 
       try {
+        const user = auth.currentUser;//Get current user
+        const token = await getIdToken(user);//Retrieve Firebase Id token
+
         const response = await axios.post('http://localhost:5000/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
           },
         });
         alert('File uploaded successfully!');

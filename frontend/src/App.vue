@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <!-- Top Navigation Bar -->
+    <!-- <Navbar/> -->
     <Navbar/>
 
     <!-- Main Content Area -->
@@ -10,15 +11,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Navbar from './components/Navbar.vue';
-
-export default {
-  name: 'App',
-  components: {
-    Navbar,
-  },
-};
 </script>
 
 <style>

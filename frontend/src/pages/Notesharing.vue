@@ -6,17 +6,7 @@
 
     <!-- Main content Area -->
     <div class="content-area">
-      <h1>
-        This is where the notes will be displayed as cards 4 per row and
-        decreases as size decrease
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id hic ex totam ea quae facilis velit illo voluptatem aut. Maxime asperiores reiciendis quo error voluptatum similique voluptate velit quis hic?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id hic ex totam ea quae facilis velit illo voluptatem aut. Maxime asperiores reiciendis quo error voluptatum similique voluptate velit quis hic?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id hic ex totam ea quae facilis velit illo voluptatem aut. Maxime asperiores reiciendis quo error voluptatum similique voluptate velit quis hic?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id hic ex totam ea quae facilis velit illo voluptatem aut. Maxime asperiores reiciendis quo error voluptatum similique voluptate velit quis hic?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id hic ex totam ea quae facilis velit illo voluptatem aut. Maxime asperiores reiciendis quo error voluptatum similique voluptate velit quis hic?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id hic ex totam ea quae facilis velit illo voluptatem aut. Maxime asperiores reiciendis quo error voluptatum similique voluptate velit quis hic?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id hic ex totam ea quae facilis velit illo voluptatem aut. Maxime asperiores reiciendis quo error voluptatum similique voluptate velit quis hic?
-      </h1>
+      <FileList/>
     </div>
   </div>
 </template>

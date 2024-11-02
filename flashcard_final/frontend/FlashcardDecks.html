@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Decks</title>
+
+    <!-- Firebase v8 for compatibility -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #141B4D;">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                
+                <a class="navbar-brand text-white" href="#">StudySphere</a>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="../../forum/frontend/forum.html">Forum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Notes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Flashcard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flashcard Decks Section -->
+    <div class="flashcard-container" id="flashcard-container">
+        <!-- Flashcard decks will be dynamically loaded here -->
+    </div>
+
+    <!-- Floating Button to Open Add Deck Modal -->
+    <button class="floating-btn" onclick="openAddDeckModal()">+</button>
+
+    <!-- Modal for Creating New Deck -->
+    <div class="modal fade" id="addDeckModal" tabindex="-1" aria-labelledby="addDeckModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDeckModalLabel">Create New Deck</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDeckForm">
+                        <div class="mb-3">
+                            <label for="deckName" class="form-label">Deck Name</label>
+                            <input type="text" class="form-control" id="deckName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="deckColor" class="form-label">Deck Color</label>
+                            <select class="form-select" id="deckColor" required>
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="yellow">Yellow</option>
+                                <option value="red">Red</option>
+                                <option value="teal">Teal</option>
+                                <option value="gray">Gray</option>
+                                <option value="dark">Dark</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Deck</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp({
+            apiKey: "AIzaSyCSTt_BtYR07qzKHm9pBgJ93RARJjt-HNA",
+            authDomain: "studysphere-8f8ae.firebaseapp.com",
+            projectId: "studysphere-8f8ae",
+            storageBucket: "studysphere-8f8ae.appspot.com",
+            messagingSenderId: "1043087075619",
+            appId: "1:1043087075619:web:10ddd930f52125a0960496",
+            measurementId: "G-Q4FTB6VJEC"
+        });
+
+        const db = firebase.firestore();
+
+        // Use onAuthStateChanged to reliably get auth status
+        firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    console.log("User is logged in:", user);
+                    // User is authenticated, allow access to the page
+                } else {
+                    console.log("No user is logged in, redirecting to login page");
+                    sessionStorage.setItem("redirectAfterLogin", window.location.href);
+                    window.location.href = "../../login_page/frontend/loginpage.html"; 
+                }
+            });
+
+        // Function to open the Add Deck modal
+        function openAddDeckModal() {
+            const addDeckModal = new bootstrap.Modal(document.getElementById('addDeckModal'));
+            addDeckModal.show();
+        }
+
+        // Function to add a deck to the logged-in user's collection
+        async function addDeck(deckName, deckColor) {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                try {
+                    const deckData = {
+                        title: deckName,
+                        subtitle: "0 cards in deck",
+                        color: deckColor,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp() // Add timestamp
+                    };
+
+                    // Add the deck to the user's `decks` subcollection in Firestore
+                    await db.collection("users").doc(user.uid).collection("decks").add(deckData);
+                    console.log("Deck added successfully with color:", deckColor);
+
+                    // Refresh the list of decks
+                    loadUserDecks(user.uid);
+                } catch (error) {
+                    console.error("Error adding deck:", error);
+                }
+            } else {
+                console.log("No user is logged in.");
+            }
+        }
+
+        // Load and display decks
+        async function loadUserDecks(userId) {
+            const container = document.getElementById("flashcard-container");
+            container.innerHTML = ""; // Clear previous content
+
+            try {
+                // Fetch decks and order them by timestamp in ascending order
+                const decksSnapshot = await db.collection("users")
+                    .doc(userId)
+                    .collection("decks")
+                    .orderBy("timestamp")
+                    .get();
+
+                if (decksSnapshot.empty) {
+                    container.innerHTML = "<p>No decks available.</p>";
+                    return;
+                }
+
+                decksSnapshot.forEach((deckDoc) => {
+                    const deckData = deckDoc.data();
+                    const deckColor = deckData.color || "blue"; // Use the color from Firestore or default to blue
+
+                    // Generate HTML for each deck
+                    const deckHTML = `
+                        <div class="flashcard-deck deck-${deckColor}">
+                            <div class="flashcard-deck-title">${deckData.title}</div>
+                            <div class="flashcard-actions">
+                                <button onclick="window.location.href='StudyPage.html?deckId=${deckDoc.id}'">Study</button>
+                                <button onclick="window.location.href='flashcards.html?deckId=${deckDoc.id}'">Add Flashcards</button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += deckHTML;
+                });
+            } catch (error) {
+                console.error("Error loading decks:", error);
+                container.innerHTML = "<p>Error loading decks. Please try again.</p>";
+            }
+        }
+
+        // Handle form submission to create a new deck
+        document.getElementById('addDeckForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const deckName = document.getElementById('deckName').value;
+            const deckColor = document.getElementById('deckColor').value;
+            addDeck(deckName, deckColor);
+
+            // Close the modal and reset the form
+            const addDeckModal = bootstrap.Modal.getInstance(document.getElementById('addDeckModal'));
+            addDeckModal.hide();
+            document.getElementById('addDeckForm').reset();
+        });
+
+        // Check auth state and load user's decks
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log("User is logged in:", user);
+                loadUserDecks(user.uid); // Load decks for the logged-in user
+            } else {
+                console.log("No user is logged in. Redirecting to login page.");
+                window.location.href = "../../login_page/frontend/loginpage.html";
+            }
+        });
+    </script>
+
+    <!-- Bootstrap JS for modal functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -31,7 +31,7 @@ module.exports = { admin, bucket }; //Export admin and bucket so they can be use
 
 //Middleware to verify firebase tokens(Have not test)
 //req header need to have token(need to set frontend to send this)
-
+//Just use req.userId to get user
 const verifyFirebaseToken = async (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
 
@@ -206,48 +206,7 @@ app.get('/files/user-notes', verifyFirebaseToken, async (req, res) => {
 });
 
 
-//This is for uploading of file 
-  app.post('/upload', upload.single('file'), async (req, res) => {
-    //upload.single('file') finds a form field in html with the name 'file'
-    //When uploaded successfully, multer will add file details to req object which can be access for file information
-    try{
-    const blob = bucket.file(req.file.originalname);
-    const blobStream = blob.createWriteStream({ //Create a writable stream that write data to blob in firebase storage
-      resumable: false, // Whether the upload is resumable or not
-      contentType: req.file.mimetype,
-    });
-  
-    blobStream.on('error', (err) => { //Listen for events in this case when upload fails
-      console.error('Error uploading file:', err);
-      res.status(500).send('Error uploading file.');
-    });
-  
-    blobStream.on('finish', async () => { //Listen for events in this case when finish uploading
-      // Get the download URL
-      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${blob.name}?alt=media`;
-
-      //Save Url to MongoDB
-      const newFile = new FileModel({
-        filename: req.file.originalname,
-        url: publicUrl
-      })
-      //Wait for file to be saved into mongodb
-      const savedFile = await newFile.save();
-  
-      // Optional: Make the file publicly accessible
-      await blob.makePublic();
-  
-      res.status(200).send({ message: 'File uploaded successfully', url: publicUrl });
-    });
-  
-    blobStream.end(req.file.buffer);
-  } catch(error) {
-    console.log('Upload endpoint error:', error);
-    res.status(500).json({ error: 'An error occurred during upload.' });
-  }
-  })
-
-//This is the updated uploading of file but have not test yet, same as previous
+//This is the updated uploading of file 
 //req need file, filename(extract from file), courseCode, userId from middleware
 app.post('/upload', verifyFirebaseToken, upload.single('file'), async (req, res) => {
 

@@ -26,7 +26,7 @@ function login(event) {
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             // Login successful
-            window.location.href = "../flashcardfolder.html"; // Redirect to dashboard or homepage
+            window.location.href = "http://localhost:5173/"; // Redirect to dashboard or homepage
         })
         .catch((error) => {
             const errorCode = error.code;

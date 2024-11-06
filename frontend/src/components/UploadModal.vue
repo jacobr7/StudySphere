@@ -54,6 +54,13 @@ export default {
     handleFileChange(event) {
       this.selectedFile = event.target.files[0];
 
+        // Reset all preview-related data before processing the new file
+      this.isImage = false;
+      this.isPDF = false;
+      this.isText = false;
+      this.previewUrl = null;
+      this.textPreview = '';
+
       if (this.selectedFile) {
         // Determine file type for preview
         const fileType = this.selectedFile.type;

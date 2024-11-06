@@ -1,79 +1,160 @@
 <template>
-    <div>
-      <h2>Uploaded Files</h2>
-      <div class="file-list">
-        <div class="file-row" v-for="file in files" :key="file._id">
-          <span class="file-name">{{ file.filename }}</span>
-          <a
-            class="download-button"
-            :href="file.url"
-            target="_blank"
-          >Download</a>
+  <div>
+    <h2>{{ showAllNotes ? "All Notes" : "Your Notes" }}</h2>
+    <div class="file-card-list container-fluid">
+      <div class="card" style="width: 18rem;" v-for="file in files" :key="file._id">
+        <div class="row">
+        <img src="../assets/SSLogo.jpeg" class="card-img-top" alt="...">
+        </div>
+
+        <div class="card-body">
+        <div class="row">
+          <h5 class="card-title">{{ file.courseCode }}</h5>
+          </div>
+          <div class="row">
+          <p class="card-text">{{ file.filename }}</p>
+          </div>
+          
+          <div class="button-container row mt-auto">
+            <a class="download-button col-6" :href="file.url" target="_blank">Download</a>
+            <button class="view-button col-4">View</button>
+
+            <!-- Conditionally render Delete button if user is the file owner -->
+            <button v-if="isUserFile(file)" class="delete-button col-4" @click="deleteFile(file._id)">Delete</button>
+          </div>
+
         </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  // import { io } from 'socket.io-client'
-  
-  export default {
-    data() {
-      return {
-        files: [],
-      };
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+import { getCurrentUserUid } from '../firebase';  // Import Firebase utility
+import { auth } from '../firebase.js'; // Adjust this path to your firebase.js
+import { getIdToken } from 'firebase/auth'; // Import getIdToken for token retrieval
+
+export default {
+  props: ['showAllNotes'],
+  data() {
+    return {
+      files: [],
+      userUid: null, // Store the user's UID here
+    };
+  },
+  watch: {
+    showAllNotes: 'fetchFiles', // Fetch notes when showAllNotes changes
+  },
+  mounted() {
+    this.fetchFiles();
+    this.userUid = getCurrentUserUid();
+  },
+
+  methods: {
+    //Check if the current file belongs to the logged-in user
+    isUserFile(file) {
+      return file.userId === this.userUid;  // Assumes that 'uploadedBy' is stored in the file's data
     },
-    mounted() {
-      this.fetchFiles();
-    },
-    methods: {
-      async fetchFiles() {
-        try {
-          const response = await axios.get('http://localhost:5000/files');
-          this.files = response.data; // Store the retrieved files in the data property
-        } catch (error) {
-          console.error('Error fetching files:', error);
+
+    async deleteFile(fileId) {
+      console.log(fileId)
+      try {
+        const response = await axios.delete('http://localhost:5000/files', {
+          data: { fileId }  // Send the file's unique ID to delete it
+        });
+        if (response.status === 200) {
+          this.files = this.files.filter(file => file._id !== fileId); // Remove the deleted file from the UI
+          alert('File deleted successfully');
         }
-      },
+      } catch (error) {
+        console.error('Error deleting file:', error);
+        alert('Error deleting file');
+      }
     },
-  };
-  </script>
-  
-  <style scoped>
-  .file-list {
-    display: flex;
-    flex-direction: column; /* Stack rows vertically */
-    margin: 20px 0; /* Add some margin for spacing */
-  }
-  
-  .file-row {
-    display: flex;
-    justify-content: space-between; /* Align items on both ends */
-    align-items: center; /* Center items vertically */
-    padding: 10px; /* Add some padding for each row */
-    border: 1px solid #ccc; /* Add a border to each row */
-    border-radius: 4px; /* Rounded corners */
-    margin: 5px 0; /* Margin between rows */
-  }
-  
-  .file-name {
-    flex-grow: 1; /* Allow the file name to take available space */
-    padding: 0 10px; /* Add some horizontal padding */
-  }
-  
-  .download-button {
-    background-color: #007bff; /* Bootstrap primary color */
-    color: white; /* White text color */
-    padding: 6px 12px; /* Button padding */
-    border: none; /* Remove default border */
-    border-radius: 4px; /* Rounded corners for the button */
-    text-decoration: none; /* Remove underline from link */
-    cursor: pointer; /* Pointer cursor on hover */
-  }
-  
-  .download-button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-  }
-  </style>
-  
+
+    async fetchFiles() {
+      const user = auth.currentUser;//Get current user
+      const token = await getIdToken(user);//Retrieve Firebase Id token
+
+      try {
+        const url = this.showAllNotes
+          ? 'http://localhost:5000/files'
+          : 'http://localhost:5000/files/user-notes';
+
+        const response = await axios.get(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        this.files = response.data;
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+.file-card-list {
+  display: flex;
+  flex-wrap: wrap; /* Wrap cards into multiple rows */
+  gap: 15px; /* Space between cards */
+  margin: 20px 0;
+}
+
+.card {
+  width: 200px; /* Width of each card */
+  border: 1px solid #ccc;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Card shadow */
+  overflow: hidden;
+}
+
+.card-body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%; /* Ensure the body stretches to full height */
+}
+
+.file-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+
+.button-container {
+  display: flex; /* Align buttons horizontally */
+  gap: 10px; /* Space between buttons */
+  justify-content: center;
+  width: 100%;
+}
+
+.download-button,
+.view-button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.view-button {
+  background-color: #28a745; /* Green button for 'View' */
+}
+
+.view-button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.download-button:hover {
+  background-color: #0056b3;
+}
+</style>

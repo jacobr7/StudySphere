@@ -11,12 +11,7 @@
       />
   
       <ul v-if="showDropdown && filteredSuggestions.length" class="dropdown-list">
-        <li
-          v-for="(suggestion, index) in filteredSuggestions"
-          :key="index"
-          @mousedown="selectSuggestion(suggestion)"
-          class="dropdown-item"
-        >
+        <li v-for="(suggestion, index) in filteredSuggestions" :key="index" @mousedown="selectSuggestion(suggestion)" class="dropdown-item">
           {{ suggestion }}
         </li>
       </ul>

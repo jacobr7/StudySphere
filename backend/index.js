@@ -148,31 +148,39 @@ app.get('/files', async (req, res) => {
   }
 });
 
-//This is to delete files(Havent Test)
-//req needs filename
+//This is to delete files
+//req needs fileId
 app.delete('/files', async (req, res) => {
-  const { filename } = req.body; //Send the filename through request body
+  const { fileId } = req.body;
+
+  console.log('Received fileId:', fileId);  // Log the received fileId
+
+  // Validate fileId
+  if (!fileId) {
+    return res.status(400).json({ error: 'File ID is required.' });
+  }
 
   try {
-    // Create a reference to the file in Firebase Storage using the filename
-    const file = bucket.file(filename);
-
-    // Delete the file from Firebase Storage
-    await file.delete();
-
-    // Now delete the corresponding document from MongoDB
-    const deletedFile = await FileModel.findOneAndDelete({ filename });
-
-    if (!deletedFile) {
-        return res.status(404).json({ error: 'File not found in database.' });
+    // Find the file by ID in MongoDB
+    const file = await FileModel.findById(fileId);
+    if (!file) {
+      return res.status(404).json({ error: 'File not found in database.' });
     }
 
-    res.status(200).json({ message: 'File deleted successfully', deletedFile });
-} catch (error) {
+    // Delete the file from Firebase Storage by Name
+    const fileRef = bucket.file(file.filename);
+    await fileRef.delete();
+
+    // Delete the file from MongoDB by Id
+    await FileModel.findByIdAndDelete(fileId);
+
+    res.status(200).json({ message: 'File deleted successfully.' });
+  } catch (error) {
     console.error('Error deleting file:', error);
     res.status(500).json({ error: 'Failed to delete file.' });
-}
+  }
 });
+
 
 //This is to retrieve notes of a certain coursecode(Have not test)
 //req need courseCode

@@ -1,67 +1,65 @@
 <template>
-    <div class="sidebar">
+  <div class="sidebar">
 
-      <div class="top-sidebar">
-        <p>Search By Module Name</p>
-        <SearchBar/>
-      </div>
-      <div class="bot-sidebar">
-        <button type="button" class="btn btn-primary">
-            Your Notes
-        </button>
-        <button @click="openUploadModel" type="button" class="btn btn-primary">
-            Upload Notes
-        </button>
-        
-      </div>
+    <div class="top-sidebar">
+      <p>Search By Module Name</p>
+      <SearchBar />
+    </div>
+    <div class="bot-sidebar">
+      <button @click="toggleNotes" type="button" class="btn btn-primary">
+        {{ showAllNotes ? "Show Your Notes" : "Show All Notes" }}
+      </button>
+      <button @click="openUploadModel" type="button" class="btn btn-primary">
+        Upload Notes
+      </button>
 
     </div>
-  </template>
-  
-  <script>
-  import SearchBar from './SearchBar.vue';
 
-  export default {
-    name: 'Sidebar',
-    components: {
-        SearchBar,
+  </div>
+</template>
+
+<script>
+import SearchBar from './SearchBar.vue';
+
+export default {
+  props: ['showAllNotes'],//receive this from parent(notesharing) whether true or false
+  name: 'Sidebar',
+  components: {
+    SearchBar,
   },
-    methods : {
-      openUploadModel(){
-        this.$emit('open-upload-modal');//Emit event to parent
-      }
-    }
+  methods: {
+    openUploadModel() {
+      this.$emit('open-upload-modal');//Emit event to parent
+    },
+    toggleNotes() {
+    this.$emit('toggle-notes', !this.showAllNotes); //sends negated value to the parent component so that the parent can update the state.
+  }
+  }
 };
 
-  </script>
-  
-  <style scoped>
-  .sidebar {
-    width: 250px; /* Fixed width for the sidebar */
-    height: 90%; /* Full height of the main content area */
-    background-color: #444;
-    color: white;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position:fixed;
-    text-align: center;
-  }
-  
-  .sidebar a {
-    color: white;
-    text-decoration: none;
-    display: block; /* Stack links vertically */
-    padding: 10px 0;
-  }
-  
-  .sidebar a:hover {
-    background-color: #555; /* Highlight on hover */
-  }
+</script>
 
-  button{
-    margin: 10px;
-  }
-  </style>
-  
+<style scoped>
+.sidebar {
+  color: white;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.top-sidebar {
+  flex: 1;
+  /* Allows it to grow if needed */
+}
+
+.bot-sidebar {
+  margin-top: auto;
+  /* Pushes bot-sidebar to the bottom */
+}
+
+button {
+  margin: 10px;
+}
+</style>

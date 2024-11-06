@@ -1,12 +1,12 @@
 <template>
   <div class="note-sharing">
-    <Sidebar @open-upload-modal="openUploadModel"/>
+    <Sidebar class="sidebar" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
 
     <UploadModal :isVisible="isModalVisible" @close="closeUploadModal"/>
 
-    <!-- Main content Area -->
+    <!-- Content Area (No 'main-content' wrapper) -->
     <div class="content-area">
-      <FileList/>
+      <FileList :showAllNotes="showAllNotes"/>
     </div>
   </div>
 </template>
@@ -22,6 +22,7 @@ export default {
   data(){
     return{
       isModalVisible: false,
+      showAllNotes: true,//Main state controls whether to show all notes or just the user's notes
     }
   },
   components: {
@@ -36,20 +37,35 @@ export default {
     },
     closeUploadModal(){
       this.isModalVisible = false;
-    }
+    },
+    toggleNotes(showAll) {// showAll is the parameter that sidebar.vue emit to which is !this.showAllNotes
+      this.showAllNotes = showAll;
+    },
   }
 };
 </script>
 
 <style scoped>
-.note-sharing{
+.note-sharing {
   display: flex;
+  height: 100vh; 
+}
+
+.sidebar {
+  width: 250px;
+  position: fixed;
+  top: 80px; /* Align with navbar height */
+  height: calc(100vh - 80px);
+  background-color: #444;
 }
 
 .content-area {
+  margin-top: 80px;
   flex: 1; /* Take up remaining space */
   padding: 20px;
-  background-color: #f8f9fa; /* Light background for main content */
-  margin-left: 250px;
+  background-color: #f8f9fa;
+  margin-left: 250px; /* Align with sidebar width */
+  overflow-y: auto; /* Ensure content area scrolls when overflowing */
+  height: calc(100vh - 80px); /* Ensure content area takes up the height minus navbar */
 }
 </style>

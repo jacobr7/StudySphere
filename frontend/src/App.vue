@@ -5,9 +5,7 @@
     <Navbar/>
 
     <!-- Main Content Area -->
-    <div class="main-content">
       <router-view /> <!-- Current page content will render here -->
-    </div>
   </div>
 </template>
 
@@ -22,13 +20,13 @@ import Navbar from './components/Navbar.vue';
 #app {
   display: flex;
   flex-direction: column; /* Stack navbar on top */
-  height: 100%;
+  height: 100vh;
   padding: 0px;
 }
 
-/* Main Content Area Styles */
-.main-content {
-  margin-top: 80px;
+router-view {
+  flex: 1; /* Takes up remaining space */
+  margin-top: 80px; /* Push the content below the navbar */
   display: flex; /* Flexbox for layout */
 }
 </style>

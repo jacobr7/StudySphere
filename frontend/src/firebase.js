@@ -1,6 +1,6 @@
 // firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCSTt_BtYR07qzKHm9pBgJ93RARJjt-HNA",
@@ -16,4 +16,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); // Initialize Firebase Auth
 
-export { auth };
+// Function to get the current user UID
+const getCurrentUserUid = () => {
+  const user = auth.currentUser;
+  return user ? user.uid : null;
+};
+
+export { auth, getCurrentUserUid };

@@ -36,7 +36,7 @@ import { auth } from '../firebase.js'; // Adjust this path to your firebase.js
 import { getIdToken } from 'firebase/auth'; // Import getIdToken for token retrieval
 
 export default {
-  props: ['showAllNotes', 'searchQuery'],
+  props: ['showAllNotes', 'searchQuery', 'refreshFiles'],
   data() {
     return {
       files: [],
@@ -46,6 +46,7 @@ export default {
   watch: {
     showAllNotes: 'fetchFiles', // Fetch notes when showAllNotes changes
     searchQuery: 'filterFiles',  // Re-filter files when searchQuery changes
+    refreshFiles: 'fetchFiles',
   },
   mounted() {
     this.fetchFiles();

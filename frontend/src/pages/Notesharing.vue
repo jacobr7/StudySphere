@@ -1,12 +1,12 @@
 <template>
   <div class="note-sharing">
-    <Sidebar class="sidebar" @searchQuery="handleSearchQuery" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
+    <Sidebar class="sidebar" :refreshSuggestions="refreshSuggestions" @searchQuery="handleSearchQuery" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
 
-    <UploadModal :isVisible="isModalVisible" @close="closeUploadModal"/>
+    <UploadModal @file-uploaded="handleFileUploaded" :isVisible="isModalVisible" @close="closeUploadModal"/>
 
     <!-- Content Area (No 'main-content' wrapper) -->
     <div class="content-area">
-      <FileList :searchQuery="searchQuery" :showAllNotes="showAllNotes"/>
+      <FileList :refreshFiles="refreshFiles" :searchQuery="searchQuery" :showAllNotes="showAllNotes"/>
     </div> 
   </div>
 </template>
@@ -23,6 +23,8 @@ export default {
       isModalVisible: false,
       showAllNotes: true,//Main state controls whether to show all notes or just the user's notes
       searchQuery: '',
+      refreshFiles: false, //Data property to signal FileList,
+      refreshSuggestions: false,
     }
   },
   components: {
@@ -42,6 +44,12 @@ export default {
     },
     handleSearchQuery(searchQuery){
       this.searchQuery = searchQuery;
+    },
+    handleFileUploaded(){
+      // Trigger Sidebar's suggestion update and FileList refresh
+      this.refreshSuggestions = !this.refreshSuggestions; // Toggle to trigger reactivity
+
+      this.refreshFiles = !this.refreshFiles;
     }
   }
 };

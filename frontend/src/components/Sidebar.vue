@@ -3,7 +3,7 @@
 
     <div class="top-sidebar">
       <p>Search By Course Code</p>
-      <SearchBar @searchQuery="forwardSearchQuery" />
+      <SearchBar :refreshSuggestions="refreshSuggestions" @searchQuery="forwardSearchQuery" />
     </div>
     <div class="bot-sidebar">
       <button @click="toggleNotes" type="button" class="btn btn-primary">
@@ -22,7 +22,7 @@
 import SearchBar from './SearchBar.vue';
 
 export default {
-  props: ['showAllNotes'],//receive this from parent(notesharing) whether true or false
+  props: ['showAllNotes', 'refreshSuggestions'],//receive this from parent(notesharing) whether true or false
   name: 'Sidebar',
   components: {
     SearchBar,

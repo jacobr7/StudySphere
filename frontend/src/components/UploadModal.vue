@@ -128,6 +128,8 @@ export default {
           },
         });
         alert('File uploaded successfully!');
+
+        this.$emit('file-uploaded');
       }
       catch (error) {
         alert('File uploaded failed!');

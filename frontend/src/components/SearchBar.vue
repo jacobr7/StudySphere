@@ -3,7 +3,7 @@
       <input
         type="text"
         v-model="query"
-        @input="filterSuggestions"
+        @input="onInputChange"
         @focus="showDropdown = true"
         @blur="hideDropdown"
         placeholder="Search..."
@@ -19,13 +19,13 @@
   </template>
   
   <script>
+import axios from 'axios';
+
   export default {
     data() {
       return {
         query: '', // User's search input
-        suggestions: [
-          'Vue.js', 'Firebase', 'MongoDB', 'Express.js', 'Node.js', 'JavaScript',
-        ], // Available options
+        suggestions: [], // Available options
         filteredSuggestions: [], // Filtered suggestions based on input
         showDropdown: false, // Controls dropdown visibility
       };
@@ -42,6 +42,7 @@
       selectSuggestion(suggestion) {
         this.query = suggestion;
         this.showDropdown = false;
+        this.onInputChange();
       },
       // Delays hiding to allow clicking on suggestions
       hideDropdown() {
@@ -49,6 +50,21 @@
           this.showDropdown = false;
         }, 200);
       },
+      async getSuggestions() {
+        try{
+          const response = await axios.get('http://localhost:5000/api/unique-course-codes');
+          this.suggestions = response.data;
+        } catch(error) {
+          console.log("Error fetching course codes", error)
+        }
+      },
+      onInputChange(){
+        this.$emit('searchQuery', this.query);
+        this.filterSuggestions();
+      }
+    },
+    mounted(){
+      this.getSuggestions();//Fetch suggestion when mounted
     },
   };
   </script>

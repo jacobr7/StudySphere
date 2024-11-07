@@ -1,18 +1,17 @@
 <template>
   <div class="note-sharing">
-    <Sidebar class="sidebar" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
+    <Sidebar class="sidebar" @searchQuery="handleSearchQuery" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
 
     <UploadModal :isVisible="isModalVisible" @close="closeUploadModal"/>
 
     <!-- Content Area (No 'main-content' wrapper) -->
     <div class="content-area">
-      <FileList :showAllNotes="showAllNotes"/>
-    </div>
+      <FileList :searchQuery="searchQuery" :showAllNotes="showAllNotes"/>
+    </div> 
   </div>
 </template>
 
 <script>
-import FileUpload from '../components/FileUpload.vue';
 import FileList from '../components/FileList.vue';
 import Sidebar from '../components/Sidebar.vue';
 import UploadModal from '../components/UploadModal.vue';
@@ -23,10 +22,10 @@ export default {
     return{
       isModalVisible: false,
       showAllNotes: true,//Main state controls whether to show all notes or just the user's notes
+      searchQuery: '',
     }
   },
   components: {
-    FileUpload,
     FileList,
     Sidebar,
     UploadModal,
@@ -41,6 +40,9 @@ export default {
     toggleNotes(showAll) {// showAll is the parameter that sidebar.vue emit to which is !this.showAllNotes
       this.showAllNotes = showAll;
     },
+    handleSearchQuery(searchQuery){
+      this.searchQuery = searchQuery;
+    }
   }
 };
 </script>

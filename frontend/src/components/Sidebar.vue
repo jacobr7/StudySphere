@@ -2,8 +2,8 @@
   <div class="sidebar">
 
     <div class="top-sidebar">
-      <p>Search By Module Name</p>
-      <SearchBar />
+      <p>Search By Course Code</p>
+      <SearchBar @searchQuery="forwardSearchQuery" />
     </div>
     <div class="bot-sidebar">
       <button @click="toggleNotes" type="button" class="btn btn-primary">
@@ -33,7 +33,10 @@ export default {
     },
     toggleNotes() {
     this.$emit('toggle-notes', !this.showAllNotes); //sends negated value to the parent component so that the parent can update the state.
-  }
+    },
+    forwardSearchQuery(searchQuery){
+      this.$emit('searchQuery', searchQuery);//Forward to event to notesharing
+    }
   }
 };
 

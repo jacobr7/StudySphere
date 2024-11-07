@@ -2,19 +2,19 @@
   <div>
     <h2>{{ showAllNotes ? "All Notes" : "Your Notes" }}</h2>
     <div class="file-card-list container-fluid">
-      <div class="card" style="width: 18rem;" v-for="file in files" :key="file._id">
+      <div class="card" style="width: 18rem;" v-for="file in filteredFiles" :key="file._id">
         <div class="row">
-        <img src="../assets/SSLogo.jpeg" class="card-img-top" alt="...">
+          <img src="../assets/SSLogo.jpeg" class="card-img-top" alt="...">
         </div>
 
         <div class="card-body">
-        <div class="row">
-          <h5 class="card-title">{{ file.courseCode }}</h5>
+          <div class="row">
+            <h5 class="card-title">{{ file.courseCode }}</h5>
           </div>
           <div class="row">
-          <p class="card-text">{{ file.filename }}</p>
+            <p class="card-text">{{ file.filename }}</p>
           </div>
-          
+
           <div class="button-container row mt-auto">
             <a class="download-button col-6" :href="file.url" target="_blank">Download</a>
             <button class="view-button col-4">View</button>
@@ -36,7 +36,7 @@ import { auth } from '../firebase.js'; // Adjust this path to your firebase.js
 import { getIdToken } from 'firebase/auth'; // Import getIdToken for token retrieval
 
 export default {
-  props: ['showAllNotes'],
+  props: ['showAllNotes', 'searchQuery'],
   data() {
     return {
       files: [],
@@ -45,10 +45,23 @@ export default {
   },
   watch: {
     showAllNotes: 'fetchFiles', // Fetch notes when showAllNotes changes
+    searchQuery: 'filterFiles',  // Re-filter files when searchQuery changes
   },
   mounted() {
     this.fetchFiles();
     this.userUid = getCurrentUserUid();
+  },
+  computed: {
+    // Filter files based on selectedCourseCode and searchQuery (partial match for courseCode)
+    filteredFiles() {
+      let filtered = this.files;
+      if (this.searchQuery) {
+        filtered = filtered.filter(file =>
+          file.courseCode.toUpperCase().includes(this.searchQuery.toUpperCase()) // Case insensitive partial match
+        );
+      }
+      return filtered;
+    },
   },
 
   methods: {
@@ -99,16 +112,21 @@ export default {
 <style scoped>
 .file-card-list {
   display: flex;
-  flex-wrap: wrap; /* Wrap cards into multiple rows */
-  gap: 15px; /* Space between cards */
+  flex-wrap: wrap;
+  /* Wrap cards into multiple rows */
+  gap: 15px;
+  /* Space between cards */
   margin: 20px 0;
 }
 
 .card {
-  width: 200px; /* Width of each card */
+  width: 200px;
+  /* Width of each card */
   border: 1px solid #ccc;
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Card shadow */
+  border-radius: 8px;
+  /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Card shadow */
   overflow: hidden;
 }
 
@@ -118,7 +136,8 @@ export default {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  height: 100%; /* Ensure the body stretches to full height */
+  height: 100%;
+  /* Ensure the body stretches to full height */
 }
 
 .file-name {
@@ -129,8 +148,10 @@ export default {
 
 
 .button-container {
-  display: flex; /* Align buttons horizontally */
-  gap: 10px; /* Space between buttons */
+  display: flex;
+  /* Align buttons horizontally */
+  gap: 10px;
+  /* Space between buttons */
   justify-content: center;
   width: 100%;
 }
@@ -147,11 +168,13 @@ export default {
 }
 
 .view-button {
-  background-color: #28a745; /* Green button for 'View' */
+  background-color: #28a745;
+  /* Green button for 'View' */
 }
 
 .view-button:hover {
-  background-color: #218838; /* Darker green on hover */
+  background-color: #218838;
+  /* Darker green on hover */
 }
 
 .download-button:hover {

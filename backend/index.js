@@ -182,24 +182,24 @@ app.delete('/files', async (req, res) => {
 });
 
 
-//This is to retrieve notes of a certain coursecode(Have not test)
-//req need courseCode
-app.get('/files/courses/:courseCode', async (req, res) => {
-  const courseCode = req.params.courseCode;//Get Course Code from request parameter
+// Endpoint to get unique course codes
+app.get('/api/unique-course-codes', async (req, res) => {
+  try {
+    const uniqueCourseCodes = await FileModel.aggregate([
+      { $group: { _id: "$courseCode" } }, // Group by courseCode
+      { $sort: { _id: 1 } } // Optional: sort alphabetically
+    ]);
 
-  try{
-    const files = await FileModel.find({ courseCode : courseCode});
+    const courseCodes = uniqueCourseCodes.map(item => item._id);
 
-    res.status(200).json(files)
-
+    res.json(courseCodes);
+  } catch (error) {
+    console.error("Error retrieving course codes:", error);
+    res.status(500).json({ error: "Failed to retrieve course codes" });
   }
-  catch(error){
-    console.log('Error retrieving files by course code:', error);
-    res.status(500).json({ error: 'Failed to retrieve files by course code.' });
-  }
-})
+});
 
-//This is to retrieve notes of a certain person(Have not test)
+//This is to retrieve notes of a certain person
 //req need userId which should be taken from middleware
 app.get('/files/user-notes', verifyFirebaseToken, async (req, res) => {
   const userId = req.userId; // Get the user ID from the request object

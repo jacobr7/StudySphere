@@ -30,3 +30,8 @@ chatButton.addEventListener('click', () => {
 
   activeChatContainer = !activeChatContainer;
 });
+
+// making a button active or inactive
+function toggleBtn(element) {
+  element.classList.toggle("active")
+}

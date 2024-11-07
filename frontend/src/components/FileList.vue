@@ -16,7 +16,7 @@
           </div>
 
           <div class="button-container row mt-auto">
-            <a class="download-button col-6" :href="file.url" target="_blank">Download</a>
+            <a class="download-button col-6" :href="'http://localhost:5000/download/' + file._id" target="_blank" :download="file.filename">Download</a>
             <button class="view-button col-4">View</button>
 
             <!-- Conditionally render Delete button if user is the file owner -->

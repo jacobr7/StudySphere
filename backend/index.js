@@ -3,6 +3,7 @@ const cors = require('cors'); // Import cors
 const multer = require('multer')
 const mongoose = require('./db'); // Import the MongoDB connection
 const FileModel = require('./models/FileModel'); // Import the Note model
+const axios = require('axios'); // Make sure axios is imported
 
 const admin = require("firebase-admin");//Import firebase admin SDK
 const serviceAccount = require("./config/firebase-admin.json"); // Import the service account key
@@ -145,6 +146,36 @@ app.get('/files', async (req, res) => {
   } catch (error) {
     console.error('Error retrieving files:', error);
     res.status(500).json({ error: 'Failed to retrieve files.' });
+  }
+});
+
+//This is to download files
+
+app.get('/download/:fileId', async (req, res) => {
+  const fileId = req.params.fileId;
+  
+  try {
+    // Find the file document in MongoDB using the fileId
+    const file = await FileModel.findById(fileId);  // Use the correct model name for your files
+
+    if (!file) {
+      return res.status(404).send('File not found');
+    }
+
+    // Get the file URL from the document
+    const fileUrl = file.url; // Assuming the file URL is stored in the `url` field of the document
+
+    // Send a GET request to Firebase Storage to retrieve the file
+    const response = await axios.get(fileUrl, { responseType: 'stream' });
+
+    // Set the Content-Disposition header to force the download
+    res.setHeader('Content-Disposition', `attachment; filename="${file.filename}"`); // Use file.filename to suggest filename
+
+    // Pipe the file stream to the response
+    response.data.pipe(res);
+  } catch (error) {
+    console.error('Error downloading file:', error);
+    res.status(500).send('Error downloading file');
   }
 });
 

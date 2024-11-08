@@ -1,66 +1,173 @@
 <template>
-  <div class="container d-flex justify-content-center align-items-center bg-cover" style="min-height: calc(100vh - 80px);">
-    <div class="card shadow" style="width: 400px;">
-      <div class="card-body">
-        <h1 class="card-title text-center mb-4">Create an Account</h1>
-        <form @submit.prevent="register">
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              id="email"
-              class="form-control"
-              placeholder="Enter your email"
-              v-model="email"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input
-              type="password"
-              id="password"
-              class="form-control"
-              placeholder="Enter your password"
-              v-model="password"
-              required
-            />
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Submit</button>
-        </form>
+  <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
+      <div class="text-center mb-3">
+        <!-------------------------------------------------->
+        <img src="" alt="Logo" class="img-fluid" style="max-width: 100px;">
+        <!---------------------------------------------------->
+      </div>
+      <h3 class="text-center mb-4">Create a User Account</h3>
+      <form @submit.prevent="register">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" class="form-control" v-model="username" placeholder="Enter Username" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" class="form-control" v-model="email" placeholder="Enter Email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" class="form-control" v-model="password" placeholder="Enter Password" required>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password:</label>
+          <input type="password" id="confirmPassword" class="form-control" v-model="confirmPassword" placeholder="Confirm Password" required>
+        </div>
+        <div class="form-check mb-3">
+          <input type="checkbox" class="form-check-input" id="agree" v-model="agree" required>
+          <label class="form-check-label" for="agree">I agree with the <a href="#">Terms of Service</a></label>
+        </div>
+
+        <div class="text-danger">{{ errorMessage }}</div>
+        <div class="text-success">{{ successMessage }}</div>
+
+        <button type="submit" class="btn btn-success btn-block">Sign Up</button>
+      </form>
+      <div class="text-center mt-3">
+        <router-link to="/sign-in">Already a Member?</router-link>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { auth } from "../firebase.js"; // Adjust this path
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from 'vue-router'; // Import router
+<script>
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
-const email = ref("");
-const password = ref("");
-const router = useRouter(); // Get a reference to your Vue router
+export default {
+  name: "Register",
+  data() {
+    return {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      agree: false,
+      errorMessage: "",
+      successMessage: ""
+    };
+  },
+  methods: {
+    async register() {
+      this.errorMessage = "";
+      this.successMessage = "";
 
-const register = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then((data) => {
-      console.log("Successfully registered!");
-      console.log(auth.currentUser);
-      router.push('/');
-    })
-    .catch((error) => {
-      console.log(error.code);
-      alert(error.message);
-    });
+      if (this.password !== this.confirmPassword) {
+        this.errorMessage = "Passwords do not match.";
+        return;
+      }
+
+      if (!this.agree) {
+        this.errorMessage = "You must agree to the Terms of Service.";
+        return;
+      }
+
+      const auth = getAuth();
+      const db = getFirestore();
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
+        const user = userCredential.user;
+
+        await updateProfile(user, { displayName: this.username });
+
+        await setDoc(doc(db, "users", user.uid), {
+          username: this.username,
+          email: this.email
+        });
+
+        this.successMessage = "Account created successfully!";
+      } catch (error) {
+        this.errorMessage = error.message;
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
-/* Additional styles can go here if needed */
-  .bg-cover {
-    background: url('../assets/background.jpg') no-repeat center center fixed;
-    background-size: cover;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.container-fluid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 0 15px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 15px;
+  font-size: 16px;
+}
+
+.custom-login-btn {
+  background-color: #007BFF;
+  color: white;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-login-btn:hover {
+  background-color: #0056b3;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+p a, .custom-link {
+  color: #007BFF;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+p a:hover, .custom-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+small {
+  color: #6c757d;
 }
 </style>

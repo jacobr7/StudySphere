@@ -2,9 +2,9 @@
   <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
     <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
       <div class="text-center mb-3">
-        <!-------------------------------------------------->
+        <!---->
         <img src="" alt="Logo" class="img-fluid" style="max-width: 100px;">
-        <!---------------------------------------------------->
+        <!----->
       </div>
       <h3 class="text-center mb-4">Create a User Account</h3>
       <form @submit.prevent="register">

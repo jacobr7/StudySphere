@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import { db } from '../firebaseConfig';
-import { collection, getDocs } from "firebase/firestore";
+import { db } from './firebase'; // Import db from firebase.js
+import { collection, getDocs } from 'firebase/firestore';
 
 export default {
   name: 'Home',

@@ -13,6 +13,7 @@
         <router-link class="nav-link" to="/" v-if="isLoggedIn"> Home </router-link>
         <router-link class="nav-link" to="/notesharing" v-if="isLoggedIn"> Notesharing </router-link>
         <router-link class="nav-link" to="/forum" v-if="isLoggedIn"> Forum </router-link>
+        <router-link class="nav-link" to="/flashcarddecks" v-if="isLoggedIn"> FlashCard </router-link>
         <router-link class="nav-link" to="/video-call" v-if="isLoggedIn"> Video Call </router-link>
       </div>
       <div v-if="isLoggedIn">

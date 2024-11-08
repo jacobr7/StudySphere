@@ -16,6 +16,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); // Initialize Firebase Auth
+const db = getFirestore(app);
 
 // Function to get the current user UID
 const getCurrentUserUid = () => {
@@ -23,4 +24,4 @@ const getCurrentUserUid = () => {
   return user ? user.uid : null;
 };
 
-export { auth, getCurrentUserUid };
+export { auth, getCurrentUserUid, db };

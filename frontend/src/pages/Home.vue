@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import { db } from './firebase'; // Import db from firebase.js
-import { collection, getDocs } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
 export default {
   name: 'Home',
@@ -49,6 +49,7 @@ export default {
   methods: {
     async fetchEvents() {
       try {
+        const db = getFirestore(); // Initialize Firestore
         const querySnapshot = await getDocs(collection(db, "events"));
         this.events = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (error) {

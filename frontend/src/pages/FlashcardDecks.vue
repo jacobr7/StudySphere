@@ -1,32 +1,6 @@
 <template>
     <div>
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #141B4D;">
-        <div class="container-fluid">
-          <a class="navbar-brand text-white" href="#">StudySphere</a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-              <li class="nav-item"><a class="nav-link active" href="#">Forum</a></li>
-              <li class="nav-item"><a class="nav-link" href="#">Notes</a></li>
-              <li class="nav-item"><a class="nav-link" href="#">Flashcard</a></li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-  
-      <!-- Flashcard Decks Section -->
+        <!-- Flashcard Decks Section -->
       <div class="flashcard-container" id="flashcard-container">
         <div v-if="decks.length === 0">No decks available.</div>
         <div

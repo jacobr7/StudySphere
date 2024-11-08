@@ -203,22 +203,22 @@
   }
   
   .floating-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #ff5a5f;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 55px;
-      height: 55px;
-      font-size: 2em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      transition: background-color 0.3s;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    font-size: 2em;
+    padding-bottom: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
   }
   
   .floating-btn:hover {

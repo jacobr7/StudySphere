@@ -50,8 +50,29 @@
         </div>
 
         <!-- Display Forum Posts -->
-        <div v-for="post in posts" :key="post.id" class="card mb-4">
-          <div class="card-body">
+          <div v-for="post in posts" :key="post.id" class="card mb-4">
+          <div class="card-body position-relative">
+
+            <!-- Dropdown for Edit/Delete -->
+            <div v-if="user && post.ownerId === user.uid" class="top-right-dropdown">
+                <button class="dropdown-btn">⋮</button>
+                <div class="dropdown-content">
+                  <button @click="editPost(post)">Edit</button>
+                  <button @click="deletePost(post.id)">Delete</button>
+                </div>
+            </div>
+
+            <!-- Conditional Rendering for Edit Form or Post Display -->
+            <template v-if="editingPost && editingPost.id === post.id">
+                <!-- Edit Form -->
+                <input v-model="editingPost.title" class="form-control mb-2" />
+                <textarea v-model="editingPost.content" class="form-control mb-2" rows="3"></textarea>
+                <div>
+                    <button @click="savePostChanges" class="savebtn btn btn-success me-2">Save Changes</button>
+                    <button @click="cancelEdit" class="cancelbtn btn btn-secondary">Cancel</button>
+                </div>
+            </template>
+
             <!-- Post Content Area -->
             <h5 class="card-title">{{ post.title }}</h5>
             <div class="d-flex justify-content-between mb-3">
@@ -63,7 +84,7 @@
               </div>
             </div>
             <p class="card-text">{{ post.content }}</p>
-
+                  
             <!-- Like and Comment icons -->
             <div class="d-flex align-items-center">
               <!-- Like button with heart icon -->
@@ -81,6 +102,8 @@
                 <i class="fas fa-comment"></i>
                 <span class="ms-2">{{ post.comments.length }}</span>
               </span>
+
+              
             </div>
 
             <!-- Comments Section (only shows when 'showComments' is true) -->
@@ -116,28 +139,75 @@
 
   
 <script>
-import { getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs, doc, query, orderBy, Timestamp, where } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs, doc, query, orderBy, Timestamp, where, deleteDoc} from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
   
   export default {
     name: 'Forum',
     data() {
-      return {
-        newPost: {
-          title: '',
-          content: '',
-          category: 'General',
-        },
-        posts: [],
-        currentUsername: 'Anonymous',
-        selectedCategory: "All",
-      };
+        return {
+            newPost: {
+              title: '',
+              content: '',
+              category: 'General',
+            },
+            
+            posts: [],
+            currentUsername: 'Anonymous',
+            selectedCategory: "All",
+            user: null, 
+            editingPost: null,
+        };
     },
     methods: {
     isLikedByUser(post) {
         const auth = getAuth();
         const user = auth.currentUser;
         return user && post.likes.includes(user.uid);
+    },
+    editPost(post) {
+        this.editingPost = { ...post }; // Clone the post to avoid direct mutation until saved
+    },
+    
+    cancelEdit() {
+        this.editingPost = null; // Clear editing state
+    },
+    async deletePost(postId) {
+        const db = getFirestore();
+        try {
+            // Delete the post from Firestore
+            await deleteDoc(doc(db, 'forumPosts', postId));
+            
+            // Update local state by filtering out the deleted post
+            this.posts = this.posts.filter(post => post.id !== postId);
+            console.log(`Post with ID ${postId} deleted successfully`);
+        } catch (error) {
+            console.error("Error deleting post:", error);
+        }
+    },
+    async savePostChanges() {
+        const db = getFirestore();
+        const postRef = doc(db, 'forumPosts', this.editingPost.id);
+
+        try {
+            // Update the post in Firestore
+            await updateDoc(postRef, {
+                title: this.editingPost.title,
+                content: this.editingPost.content,
+                category: this.editingPost.category,
+            });
+
+            // Update local state to reflect changes
+            const postIndex = this.posts.findIndex(post => post.id === this.editingPost.id);
+            if (postIndex !== -1) {
+                this.posts[postIndex] = { ...this.editingPost };
+            }
+            
+            this.editingPost = null; // Clear editing state
+            console.log("Post updated successfully");
+        } catch (error) {
+            console.error("Error updating post:", error);
+        }
     },
     async toggleLike(postId) {
         const db = getFirestore();
@@ -169,38 +239,39 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
         console.log("Selected Category:", this.selectedCategory); // Debug log
         this.loadPosts();
       },
-    async addPost() {
-        const db = getFirestore();
-        const auth = getAuth();
-        const user = auth.currentUser;
-  
-        if (user) {
-          const postData = {
-            ...this.newPost,
-            author: this.currentUsername,
-            timestamp: Timestamp.now(),
-            likes: [],
-            comments: [],
-            category:  this.newPost.category, 
-          };
-  
-          try {
-            await addDoc(collection(db, 'forumPosts'), postData);
-            this.newPost = { title: '', content: '', category: 'General' };
-            this.loadPosts();
-          } catch (error) {
-            console.error('Error adding post:', error);
-          }
-        } else {
-          console.warn('User is not authenticated.');
-        }
-      },
+      async addPost() {
+            const db = getFirestore();
+            const auth = getAuth();
+            const user = auth.currentUser;
+
+            if (user) {
+                const postData = {
+                    ...this.newPost,
+                    author: this.currentUsername,
+                    ownerId: user.uid, // Keep this consistent with what you use in the template
+                    timestamp: Timestamp.now(),
+                    likes: [],
+                    comments: [],
+                    category: this.newPost.category, 
+                };
+
+                try {
+                    await addDoc(collection(db, 'forumPosts'), postData);
+                    this.newPost = { title: '', content: '', category: 'General' };
+                    this.loadPosts();
+                } catch (error) {
+                    console.error('Error adding post:', error);
+                }
+            } else {
+                console.warn('User is not authenticated.');
+            }
+        },
+
       async loadPosts() {
         const db = getFirestore();
         let postsQuery;
 
-        console.log("Loading posts for category:", this.selectedCategory); // Debug log
-
+        console.log("Loading posts for category:", this.selectedCategory); // Debug log;
         if (this.selectedCategory === 'All') {
           postsQuery = query(collection(db, 'forumPosts'), orderBy('timestamp', 'desc'));
         } else {
@@ -213,12 +284,16 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
         try {
           const snapshot = await getDocs(postsQuery);
-          this.posts = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            showComments: false,
-            newComment: ''
-          }));
+            this.posts = snapshot.docs.map(doc => {
+              const postData = doc.data();
+              console.log("Post Data:", postData.ownerId); // Debugging line to log the data of each post
+              return {
+                  id: doc.id,
+                  ...postData,
+                  showComments: false,
+                  newComment: ''
+              };
+          });
         } catch (error) {
           console.error("Error loading posts:", error);
         }
@@ -245,15 +320,17 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
       },
     },
     mounted() {
-      const auth = getAuth();
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          this.currentUsername = user.displayName || 'Anonymous';
-          this.loadPosts();
-        } else {
-          console.log("No user is logged in.");
-        }
-      });
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user; // Set this.user to make it reactive
+                this.currentUsername = user.displayName || 'Anonymous';
+                console.log("User UID:", this.user.uid); 
+                this.loadPosts();
+            } else {
+                console.log("No user is logged in.");
+            }
+        });
     },
   };
 </script>
@@ -365,8 +442,6 @@ body {
   margin-top: 10px;
 }
 
-
-
 .like-button .unliked {
   color: #999; 
   transition: color 0.1s;
@@ -394,6 +469,64 @@ body {
   background-color: #007bff;
   color: white;
   font-weight: bold;
+}
+
+/* Ensure .card-body is positioned relatively */
+.card-body {
+  position: relative;
+}
+
+/* Dropdown button positioned absolutely within .card-body */
+.top-right-dropdown {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-block;
+}
+
+/* Dropdown button styling */
+.dropdown-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Dropdown content styling */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%; /* Positions it below the dropdown button */
+  background-color: white;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.dropdown-content button {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.dropdown-content button:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show dropdown on hover or focus */
+.top-right-dropdown:hover .dropdown-content,
+.top-right-dropdown:focus-within .dropdown-content {
+  display: block;
 }
 
 </style>

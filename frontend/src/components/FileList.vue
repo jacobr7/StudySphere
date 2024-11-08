@@ -45,7 +45,6 @@ export default {
   },
   watch: {
     showAllNotes: 'fetchFiles', // Fetch notes when showAllNotes changes
-    searchQuery: 'filterFiles',  // Re-filter files when searchQuery changes
     refreshFiles: 'fetchFiles',
   },
   mounted() {

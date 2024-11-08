@@ -17,7 +17,7 @@
 
           <div class="button-container row mt-auto">
             <a class="download-button col-6" :href="'http://localhost:5000/download/' + file._id" target="_blank" :download="file.filename">Download</a>
-            <button class="view-button col-4">View</button>
+            <button class="view-button col-4" @click="openViewModal(file)">View</button>
 
             <!-- Conditionally render Delete button if user is the file owner -->
             <button v-if="isUserFile(file)" class="delete-button col-4" @click="deleteFile(file._id)">Delete</button>
@@ -69,6 +69,10 @@ export default {
     //Check if the current file belongs to the logged-in user
     isUserFile(file) {
       return file.userId === this.userUid;  // Assumes that 'uploadedBy' is stored in the file's data
+    },
+    //Emit event to view modal and pass in file data
+    openViewModal(file){
+      this.$emit('open-view-modal', file);
     },
 
     async deleteFile(fileId) {

@@ -3,10 +3,10 @@
     <Sidebar class="sidebar" :refreshSuggestions="refreshSuggestions" @searchQuery="handleSearchQuery" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
 
     <UploadModal @file-uploaded="handleFileUploaded" :isVisible="isModalVisible" @close="closeUploadModal"/>
-
+    <ViewModal v-if="viewModalVisible" :file="selectedFile" @close="closeViewModal" />
     <!-- Content Area (No 'main-content' wrapper) -->
     <div class="content-area">
-      <FileList :refreshFiles="refreshFiles" :searchQuery="searchQuery" :showAllNotes="showAllNotes"/>
+      <FileList @open-view-modal="openViewModal" :refreshFiles="refreshFiles" :searchQuery="searchQuery" :showAllNotes="showAllNotes"/>
     </div> 
   </div>
 </template>
@@ -15,12 +15,15 @@
 import FileList from '../components/FileList.vue';
 import Sidebar from '../components/Sidebar.vue';
 import UploadModal from '../components/UploadModal.vue';
+import ViewModal from '../components/ViewModal.vue';
 
 export default {
   name: 'Notesharing',
   data(){
     return{
       isModalVisible: false,
+      viewModalVisible: false,
+      selectedFileForViewing: null,
       showAllNotes: true,//Main state controls whether to show all notes or just the user's notes
       searchQuery: '',
       refreshFiles: false, //Data property to signal FileList,
@@ -31,6 +34,7 @@ export default {
     FileList,
     Sidebar,
     UploadModal,
+    ViewModal,
   },
   methods: {
     openUploadModel(){
@@ -50,7 +54,15 @@ export default {
       this.refreshSuggestions = !this.refreshSuggestions; // Toggle to trigger reactivity
 
       this.refreshFiles = !this.refreshFiles;
-    }
+    },
+    openViewModal(file){
+      this.selectedFile = file;
+      this.viewModalVisible = true;
+    },
+    closeViewModal(){
+      this.selectedFile = null;
+      this.viewModalVisible = false;
+    },
   }
 };
 </script>
@@ -70,7 +82,6 @@ export default {
 }
 
 .content-area {
-  margin-top: 80px;
   flex: 1; /* Take up remaining space */
   padding: 20px;
   background-color: #f8f9fa;

@@ -8,6 +8,7 @@
           :key="deck.id"
           :class="['flashcard-deck', `deck-${deck.color}`]"
         >
+        <button class="delete-btn" @click="confirmDeleteDeck(deck.id)">&times;</button>
           <div class="flashcard-deck-title">{{ deck.title }}</div>
           <div class="flashcard-actions">
             <button @click="openStudy(deck.id)">Study</button>
@@ -59,7 +60,7 @@
     import { db } from '../firebase.js';
     import { auth } from '../firebase.js';
     import { getAuth, onAuthStateChanged,  } from 'firebase/auth';
-    import { getFirestore, collection, addDoc, doc, getDocs, orderBy, query } from 'firebase/firestore';
+    import { getFirestore, collection, addDoc, doc, getDocs, orderBy, query, deleteDoc} from 'firebase/firestore';
     import 'bootstrap/dist/js/bootstrap.bundle.min.js';
     
     // Initialize Firebase
@@ -100,6 +101,17 @@
             this.modalInstance.hide();
             }
         }
+        },
+        async confirmDeleteDeck(deckId) {
+          const user = auth.currentUser;
+          if (user) {
+            try {
+              await deleteDoc(doc(db, "users", user.uid, "decks", deckId));
+              this.loadDecks(user.uid); // Reload decks after deletion
+            } catch (error) {
+              console.error("Error deleting deck:", error);
+            }
+          }
         },
         async loadDecks(userId) {
         const decks = [];
@@ -231,6 +243,21 @@
   .btn-primary:hover {
       background-color: #0056b3;
   }
+
+  .delete-btn {
+  background: none;
+  border: none;
+  color: #ff4d4d;
+  font-size: 18px;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.delete-btn:hover {
+  color: #ff0000;
+}
+
   
   /* Deck Colors */
   .deck-blue { background-color: #007bff; }

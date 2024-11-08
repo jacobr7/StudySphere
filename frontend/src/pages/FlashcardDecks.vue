@@ -56,16 +56,12 @@
   
 <script>
     // Import Firebase functions
-    import { initializeApp } from 'firebase/app';
-    import { getAuth, onAuthStateChanged } from 'firebase/auth';
+    import { auth } from '../firebase.js';
+    import { getAuth, onAuthStateChanged,  } from 'firebase/auth';
     import { getFirestore, collection, addDoc, doc, getDocs, orderBy, query } from 'firebase/firestore';
     import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
-
+    
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
 
     export default {
     data() {

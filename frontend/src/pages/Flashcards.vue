@@ -173,22 +173,6 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-.navbar {
-  background-color: #141B4D !important;
-}
-.navbar-brand {
-  color: #ff9800 !important;
-  font-weight: bold;
-}
-.navbar .form-control {
-  background-color: #ffffff20;
-  border: 1px solid #fff;
-  color: white;
-}
-.navbar .form-control, .navbar .btn, .navbar .nav-link {
-  color: white !important;
-}
-
 /* Deck title */
 .deck-title {
   text-align: center;

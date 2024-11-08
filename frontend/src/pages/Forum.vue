@@ -1,11 +1,6 @@
 <template>
     <div>
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #141B4D;">
-        <div class="container-fluid">
-          <a class="navbar-brand text-white" href="#">StudySphere</a>
-        </div>
-      </nav>
+      
   
       <div class="container-fluid mt-4 d-flex">
         <!-- Sidebar (Categories) -->
@@ -237,15 +232,6 @@
 body {
     background-color: #f4f4f9;
     font-family: 'Poppins', sans-serif;
-}
-
-.navbar {
-    background-color: #141B4D !important;
-}
-
-.navbar-brand {
-    font-weight: bold;
-    color: #ff9800 !important;
 }
 
 .custom-like-btn, .custom-comment-btn {

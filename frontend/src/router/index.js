@@ -2,9 +2,13 @@
 //1)Import necessary functions and components
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../pages/Home.vue';
+import FlashcardDecks from '../pages/FlashcardDecks.vue';
 import Notesharing from '../pages/Notesharing.vue';
 import SignIn from '../pages/SignIn.vue';
 import Register from '../pages/Register.vue';
+import StudyPage from '../pages/StudyPage.vue';
+import Forum from '../pages/Forum.vue';
+
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 
@@ -21,6 +25,18 @@ const routes = [
     } },
   { path: '/register', name: 'Register', component: Register},
   { path: '/sign-in', name: 'Sign-in', component: SignIn},
+  { path: '/flashcarddecks', name: 'FlashcardDecks', component: FlashcardDecks,
+     meta: {
+    requireAuth: true,
+  } },
+  {
+    path: '/flashcards',
+    name: 'Flashcards',
+    component: () => import('../pages/Flashcards.vue')
+  },
+  {path: '/study', name: 'StudyPage', component: StudyPage},
+  {
+    path: '/forum',name: 'Forum',component: Forum,},
   
 ];
 

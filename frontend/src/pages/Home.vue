@@ -70,8 +70,43 @@ export default {
   padding: 20px;
 }
 
+/* Styling the carousel to show 3 events at a time */
+.carousel-inner {
+  display: flex;
+  overflow-x: auto;
+}
+
+.carousel-item {
+  display: inline-block;
+  width: 33.33%;  /* Show 3 items at a time */
+  padding: 10px;
+  box-sizing: border-box;
+}
+
 .carousel-item-content {
   text-align: center;
+}
+
+.carousel-control-prev, .carousel-control-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+}
+
+.carousel-control-prev {
+  left: 0;
+}
+
+.carousel-control-next {
+  right: 0;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+  background-color: white;
 }
 
 /* Additional styles */

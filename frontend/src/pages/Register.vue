@@ -4,7 +4,7 @@
       <div class="text-center mb-3">
         <!---->
         <img src="" alt="Logo" class="img-fluid" style="max-width: 100px;">
-        <!----->
+        <!---->
       </div>
       <h3 class="text-center mb-4">Create a User Account</h3>
       <form @submit.prevent="register">

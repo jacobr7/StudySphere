@@ -1,12 +1,6 @@
 <template>
     <div class="study-page">
-      <!-- Navigation bar -->
-      <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #141B4D;">
-        <div class="container-fluid">
-          <a class="navbar-brand text-white" href="#">StudySphere</a>
-        </div>
-      </nav>
-  
+      
       <!-- Study Mode Content -->
       <div class="container mt-4">
         <h2 class="study-title">Study Mode</h2>

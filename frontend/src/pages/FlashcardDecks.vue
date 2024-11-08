@@ -155,14 +155,7 @@
       font-family: 'Poppins', sans-serif;
   }
   
-  .navbar {
-      background-color: #141B4D !important;
-  }
-  
-  .navbar .navbar-brand, 
-  .navbar .nav-link {
-      color: white !important;
-  }
+
   
   .flashcard-container {
       display: grid;

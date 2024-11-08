@@ -56,6 +56,7 @@
   
 <script>
     // Import Firebase functions
+    import { db } from '../firebase.js';
     import { auth } from '../firebase.js';
     import { getAuth, onAuthStateChanged,  } from 'firebase/auth';
     import { getFirestore, collection, addDoc, doc, getDocs, orderBy, query } from 'firebase/firestore';

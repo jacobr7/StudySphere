@@ -2,7 +2,7 @@
   <div class="event-page">
     <div v-if="events.length" id="eventsCarousel" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
-        <div v-for="(event, index) in events" :key="event._id" class="carousel-item" :class="{ active: index === 0 }">
+        <div v-for="(event, index) in events" :key="event.id" class="carousel-item" :class="{ active: index === 0 }">
           <div class="carousel-item-content">
             <h3>{{ event.name }}</h3>
             <p><strong>Date:</strong> {{ event.date }}</p>
@@ -33,6 +33,9 @@
 </template>
 
 <script>
+import { db } from './firebaseConfig';
+import { collection, getDocs } from "firebase/firestore";
+
 export default {
   name: 'Home',
   data() {
@@ -46,8 +49,8 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const response = await fetch('http://localhost:5000/api/events'); // Adjust URL as needed
-        this.events = await response.json();
+        const querySnapshot = await getDocs(collection(db, "events"));
+        this.events = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (error) {
         console.error('Error fetching events:', error);
       }

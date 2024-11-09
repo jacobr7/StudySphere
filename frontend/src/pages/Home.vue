@@ -1,6 +1,7 @@
 <template>
   <div class="event-page">
     <div v-if="events.length" class="event-container">
+      <h1 class="text-center mb-4">Events Hub</h1>
       <div class="row">
         <!-- Display 3 cards at a time -->
         <div 
@@ -120,11 +121,17 @@ export default {
     this.fetchEvents();
   },
   methods: {
+    
     async fetchEvents() {
       try {
         const db = getFirestore(); // Initialize Firestore
         const querySnapshot = await getDocs(collection(db, "events"));
+        
+        // Map the events and sort them by the event date (earliest first)
         this.events = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Sort events by date
+        this.events.sort((a, b) => new Date(a.date) - new Date(b.date)); // Sorting by the 'date' field
       } catch (error) {
         console.error('Error fetching events:', error);
       }
@@ -162,9 +169,58 @@ export default {
         alert('There was an error signing up. Please try again.');
       }
     },
-    addToCalendar(event) {
-      alert(`Event '${event.name}' added to your calendar!`);
-    },
+      addToCalendar(event) {
+      const startDate = new Date(event.date);
+      const endDate = new Date(startDate);
+      endDate.setHours(startDate.getHours() + 1); // Assuming a 1-hour event, adjust as necessary
+
+      // Format the dates in the format required for calendar URLs
+      const startDateString = startDate.toISOString().replace(/[-:]/g, '').split('.')[0];
+      const endDateString = endDate.toISOString().replace(/[-:]/g, '').split('.')[0];
+
+      // Google Calendar URL format
+      const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.name)}&dates=${startDateString}/${endDateString}&details=${encodeURIComponent(event.name)} at ${event.venue}&location=${encodeURIComponent(event.venue)}`;
+
+      // Outlook Calendar URL format
+      const outlookCalendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(event.name)}&startdt=${startDateString}&enddt=${endDateString}&location=${encodeURIComponent(event.venue)}&body=${encodeURIComponent(event.name)} at ${event.venue}`;
+
+      // Yahoo Calendar URL format
+      const yahooCalendarUrl = `https://calendar.yahoo.com/?v=60&view=d&st=${startDateString}&et=${endDateString}&title=${encodeURIComponent(event.name)}&in_loc=${encodeURIComponent(event.venue)}&desc=${encodeURIComponent(event.name)} at ${event.venue}`;
+
+      // Apple Calendar (ICS) format
+      const icsContent = `BEGIN:VCALENDAR
+      VERSION:2.0
+      PRODID:-//Apple Inc.//NONSGML iCalCreator 1.0//EN
+      BEGIN:VEVENT
+      SUMMARY:${event.name}
+      DTSTART:${startDateString}
+      DTEND:${endDateString}
+      LOCATION:${event.venue}
+      DESCRIPTION:${event.name} at ${event.venue}
+      END:VEVENT
+      END:VCALENDAR`;
+
+      const icsBlob = new Blob([icsContent], { type: 'text/calendar' });
+      const icsUrl = URL.createObjectURL(icsBlob);
+
+      // Open the respective calendar service URL in a new tab or download .ics file
+      const calendarChoice = prompt("Which calendar would you like to add this event to? (Enter Google, Outlook, Yahoo, or Apple)");
+
+      if (calendarChoice.toLowerCase() === 'google') {
+      window.open(googleCalendarUrl, '_blank');  // Open Google Calendar in a new tab
+      } else if (calendarChoice.toLowerCase() === 'outlook') {
+      window.open(outlookCalendarUrl, '_blank'); // Open Outlook Calendar in a new tab
+      } else if (calendarChoice.toLowerCase() === 'yahoo') {
+      window.open(yahooCalendarUrl, '_blank');   // Open Yahoo Calendar in a new tab
+      } else if (calendarChoice.toLowerCase() === 'apple') {
+      const a = document.createElement('a');
+      a.href = icsUrl;
+      a.download = `${event.name}.ics`;
+      a.click(); // Download the .ics file
+      } else {
+      alert("Invalid calendar choice.");
+      }
+      },
     nextPage() {
       if (this.currentPage < this.maxPage) {
         this.currentPage += 1;
@@ -177,6 +233,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style scoped>
@@ -184,6 +241,7 @@ export default {
   background-color: #141B4D;
   color: #8A704C;
   padding: 20px;
+  height: 100vh; /* Full height */
 }
 
 .card {
@@ -202,50 +260,38 @@ export default {
 
 .card-title {
   font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .card-text {
-  font-size: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.btn {
-  width: 48%;
+.d-flex {
+  display: flex;
+  justify-content: space-between;
 }
 
-.badge {
-  margin-top: 10px;
-}
-
-.event-container {
-  margin-top: 20px;
+.mt-4 {
+  margin-top: 1.5rem;
 }
 
 button:disabled {
+  background-color: #888;
   cursor: not-allowed;
-  opacity: 0.5;
-}
-
-/* Modal Styling */
-.modal {
-  display: block;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-dialog {
-  max-width: 500px;
-  margin: 5% auto;
 }
 
 .modal-content {
-  background-color: #fff;
-  padding: 20px;
+  background-color: #2c3e50;
+  color: #fff;
 }
 
 .close {
-  font-size: 1.5rem;
+  color: #fff;
 }
 
-.form-control {
-  margin-bottom: 10px;
+button.btn-warning {
+  background-color: #f1c40f;
+  border: none;
 }
 </style>

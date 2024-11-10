@@ -77,7 +77,7 @@ const closeMenu = () => {
   left: 0;
   width: 100%;
   height: 80px;
-  z-index: 1000;
+  z-index: 1001;
 }
 
 .navbar-brand {
@@ -125,7 +125,7 @@ const closeMenu = () => {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  
+
 }
 
 .logout:hover {

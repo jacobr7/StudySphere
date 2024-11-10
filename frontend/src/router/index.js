@@ -8,6 +8,8 @@ import SignIn from '../pages/SignIn.vue';
 import Register from '../pages/Register.vue';
 import StudyPage from '../pages/StudyPage.vue';
 import Forum from '../pages/Forum.vue';
+import Room from '../pages/Room.vue';
+import Lobby from '../pages/Lobby.vue';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
@@ -35,8 +37,9 @@ const routes = [
     component: () => import('../pages/Flashcards.vue')
   },
   {path: '/study', name: 'StudyPage', component: StudyPage},
-  {
-    path: '/forum',name: 'Forum',component: Forum,},
+  {path: '/forum',name: 'Forum',component: Forum,},
+  {path: '/room',name: 'Room',component: Room,},
+  {path: '/lobby',name: 'Lobby',component: Lobby,},
   
 ];
 

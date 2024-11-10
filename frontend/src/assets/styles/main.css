@@ -140,30 +140,12 @@ a {
   gap: 1rem;
   align-items: center;
 }
-
-#members__button,
-#chat__button {
-  display: none;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-}
-
-#members__button:hover svg > path,
-#chat__button:hover svg,
-.nav__link:hover svg {
-  fill: #845695;
-}
-
 .nav__link svg {
   width: 0;
   height: 0;
 }
 
 @media (max-width: 640px) {
-  #members__button {
-    display: block;
-  }
 
   .nav__link svg {
     width: 1.5rem;

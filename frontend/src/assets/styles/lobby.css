@@ -1,0 +1,42 @@
+#rooms__container {
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  background-color: #141B4D;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#lobby__form {
+  padding: 2em;
+}
+
+#rooms__container__header {
+  border-radius: 10px 10px 0 0;
+  padding: 10px;
+  text-align: center;
+  background-color: #363739;
+  margin: 0;
+  font-size: 18px;
+  font-size: 300;
+  line-height: 0;
+}
+
+#rooms{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+button {
+  background-color: #8A704C;
+  border-radius: 8px;
+  color: white;
+  padding: 1rem;
+  gap: 1rem; 
+}
+

@@ -15,7 +15,6 @@
             <div class="card-body">
               <h5 class="card-title">{{ event.name }}</h5>
               <p class="card-text"><strong>Date:</strong> {{ event.date }}</p>
-              <p class="card-text"><strong>Time:</strong> {{ event.time }}</p>
               <p class="card-text"><strong>Venue:</strong> {{ event.venue }}</p>
               <p class="card-text"><strong>Available Slots:</strong> {{ event.availableSlots }}</p>
               <div class="d-flex justify-content-between">
@@ -61,31 +60,35 @@
     </div>
 
     <!-- Sign Up Form Modal -->
-    <div v-if="showSignUpModal" class="modal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Sign Up for {{ selectedEvent?.name }}</h5>
-            <button type="button" class="close" @click="closeSignUpForm">
-              <span>&times;</span>
-            </button>
+<div v-if="showSignUpModal" class="modal d-block" role="dialog" style="background: rgba(0, 0, 0, 0.5)">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Sign Up for {{ selectedEvent?.name }}</h5>
+        <button type="button" class="close" @click="closeSignUpForm">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form @submit.prevent="submitSignUp">
+          <div class="form-group">
+            <label for="userName">Name</label>
+            <input type="text" class="form-control" id="userName" v-model="userName" required />
           </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitSignUp">
-              <div class="form-group">
-                <label for="userName">Name</label>
-                <input type="text" class="form-control" id="userName" v-model="userName" required />
-              </div>
-              <div class="form-group">
-                <label for="userEmail">Email</label>
-                <input type="email" class="form-control" id="userEmail" v-model="userEmail" required />
-              </div>
-              <button type="submit" class="btn btn-primary mt-3">Submit</button>
-            </form>
+          <div class="form-group">
+            <label for="userContact">Contact Number</label>
+            <input type="text" class="form-control" id="userContact" v-model="userContact" required />
           </div>
-        </div>
+          <div class="form-group">
+            <label for="userEmail">Email</label>
+            <input type="email" class="form-control" id="userEmail" v-model="userEmail" required />
+          </div>
+          <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
       </div>
     </div>
+  </div>
+</div>
   </div>
 </template>
 
@@ -101,6 +104,7 @@ export default {
       currentPage: 0,
       eventsPerPage: 3, // Show 3 cards per page
       userName: '',
+      userContact: '',
       userEmail: '',
       showSignUpModal: false,
       selectedEvent: null,
@@ -121,7 +125,6 @@ export default {
     this.fetchEvents();
   },
   methods: {
-    
     async fetchEvents() {
       try {
         const db = getFirestore(); // Initialize Firestore
@@ -146,6 +149,7 @@ export default {
       this.showSignUpModal = false;
       this.selectedEvent = null;
       this.userName = '';
+      this.userContact = '';
       this.userEmail = '';
     },
     async submitSignUp() {
@@ -170,45 +174,38 @@ export default {
       }
     },
     addToCalendar(event) {
-  const startDate = new Date(event.date);
-  const endDate = new Date(startDate);
-  endDate.setHours(startDate.getHours() + 1); // Assuming a 1-hour event, adjust as necessary
+  // Adjust the start date to GMT+8 and get only the date part
+  const startDate = new Date(new Date(event.date).getTime() + 8 * 60 * 60 * 1000);
+  
+  // Format date in YYYYMMDD format for an all-day event
+  const startDateString = startDate.toISOString().slice(0, 10).replace(/-/g, '');
+  const endDateString = startDateString; // Single-day all-day event uses the same start and end date
 
-  // Convert to Singapore Time (GMT+8)
-  const singaporeOffset = 8 * 60; // Singapore is UTC+8, so offset is 8 hours in minutes
-  const startDateSGT = new Date(startDate.getTime() + singaporeOffset * 60 * 1000);
-  const endDateSGT = new Date(endDate.getTime() + singaporeOffset * 60 * 1000);
+  // Google Calendar URL format for all-day events
+  const googleCalendarUrl = `https://calendar.google.com/calendar/u/0/r/eventedit?text=${encodeURIComponent(event.name)}&dates=${startDateString}/${endDateString}&details=${encodeURIComponent(event.name)} at ${event.venue}&location=${encodeURIComponent(event.venue)}`;
 
-  // Format the dates in the format required for calendar URLs
-  const startDateString = startDateSGT.toISOString().replace(/[-:]/g, '').split('.')[0];
-  const endDateString = endDateSGT.toISOString().replace(/[-:]/g, '').split('.')[0];
-
-  // Google Calendar URL format
-  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.name)}&dates=${startDateString}/${endDateString}&details=${encodeURIComponent(event.name)} at ${event.venue}&location=${encodeURIComponent(event.venue)}`;
-
-  // Outlook Calendar URL format
+  // Outlook Calendar URL format for all-day events
   const outlookCalendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(event.name)}&startdt=${startDateString}&enddt=${endDateString}&location=${encodeURIComponent(event.venue)}&body=${encodeURIComponent(event.name)} at ${event.venue}`;
 
-  // Yahoo Calendar URL format
+  // Yahoo Calendar URL format for all-day events
   const yahooCalendarUrl = `https://calendar.yahoo.com/?v=60&view=d&st=${startDateString}&et=${endDateString}&title=${encodeURIComponent(event.name)}&in_loc=${encodeURIComponent(event.venue)}&desc=${encodeURIComponent(event.name)} at ${event.venue}`;
 
-  // Apple Calendar (ICS) format
+  // Apple Calendar (ICS) format for all-day events
   const icsContent = `BEGIN:VCALENDAR
-  VERSION:2.0
-  PRODID:-//Apple Inc.//NONSGML iCalCreator 1.0//EN
-  BEGIN:VEVENT
-  SUMMARY:${event.name}
-  DTSTART:${startDateString}
-  DTEND:${endDateString}
-  LOCATION:${event.venue}
-  DESCRIPTION:${event.name} at ${event.venue}
-  END:VEVENT
-  END:VCALENDAR`;
+VERSION:2.0
+PRODID:-//Apple Inc.//NONSGML iCalCreator 1.0//EN
+BEGIN:VEVENT
+SUMMARY:${event.name}
+DTSTART;VALUE=DATE:${startDateString}
+DTEND;VALUE=DATE:${endDateString}
+LOCATION:${event.venue}
+DESCRIPTION:${event.name} at ${event.venue}
+END:VEVENT
+END:VCALENDAR`;
 
   const icsBlob = new Blob([icsContent], { type: 'text/calendar' });
   const icsUrl = URL.createObjectURL(icsBlob);
 
-  // Open the respective calendar service URL in a new tab or download .ics file
   const calendarChoice = prompt("Which calendar would you like to add this event to? (Enter Google, Outlook, Yahoo, or Apple)");
 
   if (calendarChoice.toLowerCase() === 'google') {
@@ -218,27 +215,21 @@ export default {
   } else if (calendarChoice.toLowerCase() === 'yahoo') {
     window.open(yahooCalendarUrl, '_blank');   // Open Yahoo Calendar in a new tab
   } else if (calendarChoice.toLowerCase() === 'apple') {
-    const a = document.createElement('a');
-    a.href = icsUrl;
-    a.download = `${event.name}.ics`;
-    a.click(); // Download the .ics file
-  } else {
-    alert("Invalid calendar choice.");
+    const link = document.createElement('a');
+    link.href = icsUrl;
+    link.download = `${event.name}.ics`;
+    link.click();
+    URL.revokeObjectURL(icsUrl);              // Release the blob URL
   }
 },
-    nextPage() {
-      if (this.currentPage < this.maxPage) {
-        this.currentPage += 1;
-      }
-    },
     previousPage() {
-      if (this.currentPage > 0) {
-        this.currentPage -= 1;
-      }
+      if (this.currentPage > 0) this.currentPage--;
+    },
+    nextPage() {
+      if (this.currentPage < this.maxPage) this.currentPage++;
     },
   },
 };
-
 </script>
 
 <style scoped>

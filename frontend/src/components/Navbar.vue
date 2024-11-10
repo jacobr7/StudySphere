@@ -1,7 +1,12 @@
 <template>
   <nav class="navbar">
     <div class="navbar-brand">
-      <img src="../assets/SSLogo.jpeg" alt="App Logo" class="logo" /> <!-- Adjust the path to your logo -->
+      <img
+            class="logo"
+            src="../assets/images/StudySphere.svg"
+            alt="Site Logo"
+            style="filter: invert(96%) sepia(0%) saturate(7500%) hue-rotate(168deg) brightness(103%) contrast(102%);"
+          />
       <h1 class="app-name">Study Sphere</h1> <!-- Replace with your app's name -->
     </div>
 
@@ -17,7 +22,7 @@
         <router-link class="nav-link" @click="closeMenu" to="/forum" v-if="isLoggedIn"> Forum </router-link>
         <router-link class="nav-link" @click="closeMenu" to="/flashcarddecks" v-if="isLoggedIn"> FlashCard
         </router-link>
-        <router-link class="nav-link" @click="closeMenu" to="/lobby" v-if="isLoggedIn"> Video Call </router-link>
+        <router-link class="nav-link" @click="closeMenu" to="/lobby" v-if="isLoggedIn"> Study Rooms </router-link>
 
       <button class="logout" @click="handleSignOut" v-if="isLoggedIn">Logout</button>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header />
+    <Navbar />
     <div class="container">
       <div id="room__container">
         <section id="stream__container">
@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import Header from "../components/Header.vue";
+import Navbar from "../components/Navbar.vue";
 import StreamActions from "../components/StreamActions.vue";
 import { joinRoomInit, leaveRoom } from "../services/AgoraService";
 
 export default {
   components: {
-    Header,
+    Navbar,
     StreamActions,
   },
   data() {

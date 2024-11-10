@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header />
+    <Navbar />
     <main id="room__lobby__container">
       <div id="rooms__container">
         <div id="rooms__container__header">
@@ -24,9 +24,10 @@
 </template>
 
 <script>
-import Header from '../components/Header.vue';
+import Navbar from "../components/Navbar.vue";
+import Navbar from "../components/Navbar.vue";
 export default {
-  components: { Header },
+  components: { Navbar },
   data() {
     return {
       channelNames: ["1", "2", "3"], // Replace with your actual channel names

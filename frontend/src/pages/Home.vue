@@ -169,58 +169,63 @@ export default {
         alert('There was an error signing up. Please try again.');
       }
     },
-      addToCalendar(event) {
-      const startDate = new Date(event.date);
-      const endDate = new Date(startDate);
-      endDate.setHours(startDate.getHours() + 1); // Assuming a 1-hour event, adjust as necessary
+    addToCalendar(event) {
+  const startDate = new Date(event.date);
+  const endDate = new Date(startDate);
+  endDate.setHours(startDate.getHours() + 1); // Assuming a 1-hour event, adjust as necessary
 
-      // Format the dates in the format required for calendar URLs
-      const startDateString = startDate.toISOString().replace(/[-:]/g, '').split('.')[0];
-      const endDateString = endDate.toISOString().replace(/[-:]/g, '').split('.')[0];
+  // Convert to Singapore Time (GMT+8)
+  const singaporeOffset = 8 * 60; // Singapore is UTC+8, so offset is 8 hours in minutes
+  const startDateSGT = new Date(startDate.getTime() + singaporeOffset * 60 * 1000);
+  const endDateSGT = new Date(endDate.getTime() + singaporeOffset * 60 * 1000);
 
-      // Google Calendar URL format
-      const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.name)}&dates=${startDateString}/${endDateString}&details=${encodeURIComponent(event.name)} at ${event.venue}&location=${encodeURIComponent(event.venue)}`;
+  // Format the dates in the format required for calendar URLs
+  const startDateString = startDateSGT.toISOString().replace(/[-:]/g, '').split('.')[0];
+  const endDateString = endDateSGT.toISOString().replace(/[-:]/g, '').split('.')[0];
 
-      // Outlook Calendar URL format
-      const outlookCalendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(event.name)}&startdt=${startDateString}&enddt=${endDateString}&location=${encodeURIComponent(event.venue)}&body=${encodeURIComponent(event.name)} at ${event.venue}`;
+  // Google Calendar URL format
+  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.name)}&dates=${startDateString}/${endDateString}&details=${encodeURIComponent(event.name)} at ${event.venue}&location=${encodeURIComponent(event.venue)}`;
 
-      // Yahoo Calendar URL format
-      const yahooCalendarUrl = `https://calendar.yahoo.com/?v=60&view=d&st=${startDateString}&et=${endDateString}&title=${encodeURIComponent(event.name)}&in_loc=${encodeURIComponent(event.venue)}&desc=${encodeURIComponent(event.name)} at ${event.venue}`;
+  // Outlook Calendar URL format
+  const outlookCalendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(event.name)}&startdt=${startDateString}&enddt=${endDateString}&location=${encodeURIComponent(event.venue)}&body=${encodeURIComponent(event.name)} at ${event.venue}`;
 
-      // Apple Calendar (ICS) format
-      const icsContent = `BEGIN:VCALENDAR
-      VERSION:2.0
-      PRODID:-//Apple Inc.//NONSGML iCalCreator 1.0//EN
-      BEGIN:VEVENT
-      SUMMARY:${event.name}
-      DTSTART:${startDateString}
-      DTEND:${endDateString}
-      LOCATION:${event.venue}
-      DESCRIPTION:${event.name} at ${event.venue}
-      END:VEVENT
-      END:VCALENDAR`;
+  // Yahoo Calendar URL format
+  const yahooCalendarUrl = `https://calendar.yahoo.com/?v=60&view=d&st=${startDateString}&et=${endDateString}&title=${encodeURIComponent(event.name)}&in_loc=${encodeURIComponent(event.venue)}&desc=${encodeURIComponent(event.name)} at ${event.venue}`;
 
-      const icsBlob = new Blob([icsContent], { type: 'text/calendar' });
-      const icsUrl = URL.createObjectURL(icsBlob);
+  // Apple Calendar (ICS) format
+  const icsContent = `BEGIN:VCALENDAR
+  VERSION:2.0
+  PRODID:-//Apple Inc.//NONSGML iCalCreator 1.0//EN
+  BEGIN:VEVENT
+  SUMMARY:${event.name}
+  DTSTART:${startDateString}
+  DTEND:${endDateString}
+  LOCATION:${event.venue}
+  DESCRIPTION:${event.name} at ${event.venue}
+  END:VEVENT
+  END:VCALENDAR`;
 
-      // Open the respective calendar service URL in a new tab or download .ics file
-      const calendarChoice = prompt("Which calendar would you like to add this event to? (Enter Google, Outlook, Yahoo, or Apple)");
+  const icsBlob = new Blob([icsContent], { type: 'text/calendar' });
+  const icsUrl = URL.createObjectURL(icsBlob);
 
-      if (calendarChoice.toLowerCase() === 'google') {
-      window.open(googleCalendarUrl, '_blank');  // Open Google Calendar in a new tab
-      } else if (calendarChoice.toLowerCase() === 'outlook') {
-      window.open(outlookCalendarUrl, '_blank'); // Open Outlook Calendar in a new tab
-      } else if (calendarChoice.toLowerCase() === 'yahoo') {
-      window.open(yahooCalendarUrl, '_blank');   // Open Yahoo Calendar in a new tab
-      } else if (calendarChoice.toLowerCase() === 'apple') {
-      const a = document.createElement('a');
-      a.href = icsUrl;
-      a.download = `${event.name}.ics`;
-      a.click(); // Download the .ics file
-      } else {
-      alert("Invalid calendar choice.");
-      }
-      },
+  // Open the respective calendar service URL in a new tab or download .ics file
+  const calendarChoice = prompt("Which calendar would you like to add this event to? (Enter Google, Outlook, Yahoo, or Apple)");
+
+  if (calendarChoice.toLowerCase() === 'google') {
+    window.open(googleCalendarUrl, '_blank');  // Open Google Calendar in a new tab
+  } else if (calendarChoice.toLowerCase() === 'outlook') {
+    window.open(outlookCalendarUrl, '_blank'); // Open Outlook Calendar in a new tab
+  } else if (calendarChoice.toLowerCase() === 'yahoo') {
+    window.open(yahooCalendarUrl, '_blank');   // Open Yahoo Calendar in a new tab
+  } else if (calendarChoice.toLowerCase() === 'apple') {
+    const a = document.createElement('a');
+    a.href = icsUrl;
+    a.download = `${event.name}.ics`;
+    a.click(); // Download the .ics file
+  } else {
+    alert("Invalid calendar choice.");
+  }
+},
     nextPage() {
       if (this.currentPage < this.maxPage) {
         this.currentPage += 1;

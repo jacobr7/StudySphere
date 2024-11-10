@@ -17,7 +17,7 @@
         <router-link class="nav-link" @click="closeMenu" to="/forum" v-if="isLoggedIn"> Forum </router-link>
         <router-link class="nav-link" @click="closeMenu" to="/flashcarddecks" v-if="isLoggedIn"> FlashCard
         </router-link>
-        <router-link class="nav-link" @click="closeMenu" to="/video-call" v-if="isLoggedIn"> Video Call </router-link>
+        <router-link class="nav-link" @click="closeMenu" to="/lobby" v-if="isLoggedIn"> Video Call </router-link>
 
       <button class="logout" @click="handleSignOut" v-if="isLoggedIn">Logout</button>
     </div>

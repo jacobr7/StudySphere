@@ -1,11 +1,13 @@
 <template>
   <div class="note-sharing">
-    <Sidebar class="sidebar" :refreshSuggestions="refreshSuggestions" @searchQuery="handleSearchQuery" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
+    <Sidebar v-if="!isSmallScreen" class="sidebar" :refreshSuggestions="refreshSuggestions" @searchQuery="handleSearchQuery" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
+    <FloatingUploadButton class="highestzindex" v-if="isSmallScreen" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
 
     <UploadModal @file-uploaded="handleFileUploaded" :isVisible="isModalVisible" @close="closeUploadModal"/>
     <ViewModal v-if="viewModalVisible" :file="selectedFile" @close="closeViewModal" />
     <!-- Content Area (No 'main-content' wrapper) -->
-    <div class="content-area">
+    <div :class="['content-area', { 'no-sidebar-margin': isSmallScreen }]">
+      <SearchBar v-if="isSmallScreen" class="search-bar-top" :refreshSuggestions="refreshSuggestions" @searchQuery="handleSearchQuery"/>
       <FileList @open-view-modal="openViewModal" :refreshFiles="refreshFiles" :searchQuery="searchQuery" :showAllNotes="showAllNotes"/>
     </div> 
   </div>
@@ -16,6 +18,8 @@ import FileList from '../components/FileList.vue';
 import Sidebar from '../components/Sidebar.vue';
 import UploadModal from '../components/UploadModal.vue';
 import ViewModal from '../components/ViewModal.vue';
+import FloatingUploadButton from '../components/FloatingUploadButton.vue';
+import SearchBar from '../components/SearchBar.vue';
 
 export default {
   name: 'Notesharing',
@@ -28,9 +32,12 @@ export default {
       searchQuery: '',
       refreshFiles: false, //Data property to signal FileList,
       refreshSuggestions: false,
+      isSmallScreen: window.innerWidth <= 768, // Initial screen size check
     }
   },
   components: {
+    SearchBar,
+    FloatingUploadButton,
     FileList,
     Sidebar,
     UploadModal,
@@ -63,7 +70,16 @@ export default {
       this.selectedFile = null;
       this.viewModalVisible = false;
     },
-  }
+    handleResize() {
+      this.isSmallScreen = window.innerWidth <= 768; // Update screen size check on resize
+    },
+  },
+  mounted() {
+    window.addEventListener("resize", this.handleResize); // Listen for resize events
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize); // Clean up event listener
+  },
 };
 </script>
 
@@ -85,8 +101,39 @@ export default {
   flex: 1; /* Take up remaining space */
   padding: 20px;
   background-color: #f8f9fa;
-  margin-left: 250px; /* Align with sidebar width */
   overflow-y: auto; /* Ensure content area scrolls when overflowing */
   height: calc(100vh - 80px); /* Ensure content area takes up the height minus navbar */
+}
+
+/* Apply left margin only when sidebar is visible */
+.content-area:not(.no-sidebar-margin) {
+  margin-left: 250px;
+}
+
+/* Remove left margin for smaller screens */
+.no-sidebar-margin {
+  margin-left: 0;
+}
+
+.search-bar-top {
+  width: 100%;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  position: static;
+  top: 0;
+  z-index: 10;
+
+}
+
+.highestzindex{
+  z-index: 15;
+}
+
+@media (max-width: 768px) {
+  .search-bar-top {
+    display: block;
+  }
 }
 </style>

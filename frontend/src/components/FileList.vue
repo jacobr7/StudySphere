@@ -184,4 +184,10 @@ export default {
 .download-button:hover {
   background-color: #0056b3;
 }
+
+@media (max-width: 768px) {
+  h2{
+    margin-top: 8px;
+  }
+}
 </style>

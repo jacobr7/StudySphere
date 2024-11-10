@@ -310,7 +310,9 @@ app.post('/upload', verifyFirebaseToken, upload.single('file'), async (req, res)
 
 
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Backend server running at http://localhost:${PORT}`);
-});
+// // Start the server
+// app.listen(PORT, () => {
+//   console.log(`Backend server running at http://localhost:${PORT}`);
+// });
+
+module.exports = app;

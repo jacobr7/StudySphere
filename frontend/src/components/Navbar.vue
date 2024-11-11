@@ -109,6 +109,7 @@ const closeMenu = () => {
   /* Remove default margin from heading */
   font-size: 24px;
   /* Adjust font size as needed */
+  color:white;
 }
 
 .navbar-links {

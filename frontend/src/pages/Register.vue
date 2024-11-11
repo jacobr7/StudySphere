@@ -1,9 +1,9 @@
 <template>
-  <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
+  <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-cover">
     <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
       <div class="text-center mb-3">
         <!---->
-        <img src="" alt="Logo" class="img-fluid" style="max-width: 100px;">
+        <img src="..\assets\SSLogo.jpeg" alt="Logo" class="img-fluid" style="max-width: 100px;">
         <!---->
       </div>
       <h3 class="text-center mb-4">Create a User Account</h3>
@@ -169,5 +169,14 @@ p a:hover, .custom-link:hover {
 
 small {
   color: #6c757d;
+}
+
+.bg-cover{
+  background: url('../assets/downloads2.webp') no-repeat center center fixed;
+    background-size: cover;
+    margin : 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;  /* Hide any overflow to the right */
 }
 </style>

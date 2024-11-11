@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "agora-rtc-sdk-ng": "^4.22.0",
+    "agora-rtc-sdk-ng": "^4.22.2",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "firebase": "^10.14.1",

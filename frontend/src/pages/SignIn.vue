@@ -1,5 +1,6 @@
 <template>
-    <div class="container d-flex justify-content-center align-items-center bg-cover" style="min-height: calc(100vh - 80px);">
+
+    <div class="container-fluid d-flex justify-content-center align-items-center bg-cover">
       <div class="card shadow" style="width: 400px;">
         <div class="card-body">
           <h1 class="card-title text-center mb-4">Sign In</h1>
@@ -76,6 +77,11 @@
   .bg-cover {
     background: url('../assets/background.jpg') no-repeat center center fixed;
     background-size: cover;
+    margin : 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;  /* Hide any overflow to the right */
 }
+
   </style>
   

@@ -15,8 +15,8 @@
             <p class="card-text">{{ file.filename }}</p>
           </div>
 
-          <div class="button-container row mt-auto">
-            <a class="download-button col-6" :href="'http://localhost:5000/download/' + file._id" target="_blank" :download="file.filename">Download</a>
+          <div class="button-container row mt-auto"><!-- http://localhost:5000/download/ -->
+            <a class="download-button col-6" :href="'/api/download/' + file._id" target="_blank" :download="file.filename">Download</a>
             <button class="view-button col-4" @click="openViewModal(file)">View</button>
 
             <!-- Conditionally render Delete button if user is the file owner -->
@@ -77,7 +77,7 @@ export default {
     async deleteFile(fileId) {
       console.log(fileId)
       try {
-        const response = await axios.delete('http://localhost:5000/files', {
+        const response = await axios.delete('/api/files', {//http://localhost:5000/files
           data: { fileId }  // Send the file's unique ID to delete it
         });
         if (response.status === 200) {
@@ -96,8 +96,8 @@ export default {
 
       try {
         const url = this.showAllNotes
-          ? 'http://localhost:5000/files'
-          : 'http://localhost:5000/files/user-notes';
+          ? '/api/files'//http://localhost:5000/files
+          : '/api/files/user-notes';//http://localhost:5000/files/user-notes
 
         const response = await axios.get(url, {
           headers: {

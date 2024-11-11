@@ -121,7 +121,7 @@ export default {
         const user = auth.currentUser;//Get current user
         const token = await getIdToken(user);//Retrieve Firebase Id token
 
-        const response = await axios.post('http://localhost:5000/upload', formData, {
+        const response = await axios.post('/api/upload', formData, {//http://localhost:5000/upload
           headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`,

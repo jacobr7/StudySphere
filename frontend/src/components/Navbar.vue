@@ -147,7 +147,7 @@ const closeMenu = () => {
 
 
 /* Small screens */
-@media (max-width: 881px) {
+@media (max-width: 955px) {
   .navbar-links {
     display: none;
     /* Hide links initially on smaller screens */

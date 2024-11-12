@@ -7,5 +7,4 @@ export default defineConfig({
   // server: {
   //   hmr: false
   // }
-  base: '/',  // Ensures Vite assets are served relative to the root
 })

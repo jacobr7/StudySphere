@@ -77,7 +77,7 @@ export default {
     async deleteFile(fileId) {
       console.log(fileId)
       try {
-        const response = await axios.delete('/api/files', {//http://localhost:5000/files
+        const response = await axios.delete('study-sphere-z8xi.vercel.app/files', {//http://localhost:5000/files
           data: { fileId }  // Send the file's unique ID to delete it
         });
         if (response.status === 200) {
@@ -96,8 +96,8 @@ export default {
 
       try {
         const url = this.showAllNotes
-          ? '/api/files'//http://localhost:5000/files
-          : '/api/files/user-notes';//http://localhost:5000/files/user-notes
+          ? 'study-sphere-z8xi.vercel.app/files'//http://localhost:5000/files
+          : 'study-sphere-z8xi.vercel.app/files/user-notes';//http://localhost:5000/files/user-notes
 
         const response = await axios.get(url, {
           headers: {

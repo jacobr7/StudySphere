@@ -50,7 +50,7 @@ export default {
     },
     async getSuggestions() {
       try {
-        const response = await axios.get('study-sphere-z8xi.vercel.app/unique-course-codes');//http://localhost:5000/api/unique-course-codes
+        const response = await axios.get('https://study-sphere-z8xi.vercel.app/unique-course-codes');//http://localhost:5000/api/unique-course-codes
         this.suggestions = response.data;
       } catch (error) {
         console.log("Error fetching course codes", error)

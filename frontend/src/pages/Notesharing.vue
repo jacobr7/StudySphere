@@ -101,7 +101,6 @@ export default {
   flex: 1; /* Take up remaining space */
   padding: 20px;
   background-color: #f8f9fa;
-  overflow-y: auto; /* Ensure content area scrolls when overflowing */
   height: calc(100vh - 80px); /* Ensure content area takes up the height minus navbar */
 }
 

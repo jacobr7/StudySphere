@@ -17,7 +17,12 @@ import Navbar from './components/Navbar.vue';
 </script>
 
 <style>
-
+/* for scroll bar on all pages*/
+body {
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+}
 
 /* App Container */
 #app {

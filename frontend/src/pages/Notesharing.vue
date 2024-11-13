@@ -88,7 +88,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%; 
-  flex-grow: 1;
+  flex: 1;
 }
 
 .sidebar {
@@ -100,11 +100,10 @@ export default {
 }
 
 .content-area {
-  flex-grow: 1; /* Take up remaining space */
+  flex: 1; /* Take up remaining space */
   padding: 20px;
   background-color: #f8f9fa;
   height: calc(100vh - 80px); /* Adjust to ensure it doesn’t exceed the viewport height */
-  overflow-y: auto;
 }
 
 /* Apply left margin only when sidebar is visible */

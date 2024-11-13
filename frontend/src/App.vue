@@ -35,8 +35,7 @@ body {
 
 .marginstuff{
   margin-top: 80px;
-  flex-grow: 1; /* Make this take up the remaining height */
-  overflow-y: inherit; /* Allow scrolling within this content area */
+  flex: 1; /* Make this take up the remaining height */
   display: flex;
   flex-direction: column;
 }

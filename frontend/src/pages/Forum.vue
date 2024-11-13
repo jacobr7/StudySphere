@@ -355,6 +355,7 @@ body {
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
+    margin-right: 5px;
 }
 
 /* Container to hold both the sidebar and the main content */

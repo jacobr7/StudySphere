@@ -121,6 +121,7 @@ export default {
   gap: 15px;
   /* Space between cards */
   margin: 20px 0;
+  width: 100%;
 }
 
 .card {

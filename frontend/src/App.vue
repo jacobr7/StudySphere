@@ -22,6 +22,7 @@ body {
     overflow-y: auto;
     margin: 0;
     padding: 0;
+    height: 100%;
 }
 
 /* App Container */
@@ -32,13 +33,11 @@ body {
   padding: 0px;
 }
 
-router-view {
-  flex: 1; /* Takes up remaining space */
-  margin-top: 80px; /* Push the content below the navbar */
-  display: flex; /* Flexbox for layout */
-}
-
 .marginstuff{
   margin-top: 80px;
+  flex-grow: 1; /* Make this take up the remaining height */
+  overflow-y: auto; /* Allow scrolling within this content area */
+  display: flex;
+  flex-direction: column;
 }
 </style>

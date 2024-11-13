@@ -86,7 +86,9 @@ export default {
 <style scoped>
 .note-sharing {
   display: flex;
-  height: 100vh; 
+  flex-direction: column;
+  height: 100%; 
+  flex-grow: 1;
 }
 
 .sidebar {
@@ -98,11 +100,11 @@ export default {
 }
 
 .content-area {
-  flex: 1; /* Take up remaining space */
+  flex-grow: 1; /* Take up remaining space */
   padding: 20px;
   background-color: #f8f9fa;
-  height: calc(100vh - 80px); /* Ensure content area takes up the height minus navbar */
-  flex-grow: 1;
+  height: calc(100vh - 80px); /* Adjust to ensure it doesn’t exceed the viewport height */
+  overflow-y: auto;
 }
 
 /* Apply left margin only when sidebar is visible */

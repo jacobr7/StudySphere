@@ -19,7 +19,7 @@ import Navbar from './components/Navbar.vue';
 <style>
 /* for scroll bar on all pages*/
 body {
-    overflow: hidden;
+    overflow-y: auto;
     margin: 0;
     padding: 0;
     height: 100%;
@@ -36,7 +36,7 @@ body {
 .marginstuff{
   margin-top: 80px;
   flex-grow: 1; /* Make this take up the remaining height */
-  overflow-y: auto; /* Allow scrolling within this content area */
+  overflow-y: inherit; /* Allow scrolling within this content area */
   display: flex;
   flex-direction: column;
 }

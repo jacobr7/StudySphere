@@ -229,7 +229,7 @@ app.delete('/files', async (req, res) => {
 
 
 // Endpoint to get unique course codes
-app.get('/api/unique-course-codes', async (req, res) => {
+app.get('/api/uniqueCourseCodes', async (req, res) => {
   try {
     const uniqueCourseCodes = await FileModel.aggregate([
       { $group: { _id: "$courseCode" } }, // Group by courseCode

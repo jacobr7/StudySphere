@@ -16,6 +16,9 @@
 import Navbar from "../components/Navbar.vue";
 import StreamActions from "../components/StreamActions.vue";
 import { joinRoomInit, leaveRoom } from "../services/AgoraService";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from '../firebase.js';
+
 
 export default {
   components: {
@@ -29,14 +32,14 @@ export default {
     };
   },
   async mounted() {
-    try {
-      await joinRoomInit(this.roomId);
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            joinRoomInit(this.roomId, user.uid);
+        } else {
+            router.push("/login");
+        }
+        });
 
-      // Listen for browser back/forward navigation
-      window.addEventListener("popstate", this.handleLeaveRoom);
-    } catch (error) {
-      console.error("Error initializing room:", error);
-    }
   },
   beforeUnmount() {
     // Ensure the user disconnects when the component is destroyed
@@ -47,7 +50,7 @@ export default {
     
     async handleLeaveRoom() {
       try {
-        await leaveRoom();
+        await leaveRoom(this.roomId);
         console.log("User disconnected from the room");
       } catch (error) {
         console.error("Error leaving the room:", error);

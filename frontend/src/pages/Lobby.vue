@@ -24,15 +24,28 @@
 </template>
 
 <script>
-import Navbar from "../components/Navbar.vue";
+import Navbar from '../components/Navbar.vue';
 export default {
   components: { Navbar },
   data() {
     return {
       channelNames: ["1", "2", "3"], // Replace with your actual channel names
+      participantCount: {},
     };
+  },async mounted() {
+    this.updateParticipantCounts();
+    setInterval(this.updateParticipantCounts, 5000); // Refresh counts every 5 seconds
   },
   methods: {
+    async updateParticipantCounts() {
+      await checkParticipantCountForAllRooms(this.channelNames);
+      this.channelNames.forEach((room) => {
+        this.$set(this.participantCounts, room, RoomParticipant(room));
+      });
+    },
+    getParticipantCount(roomId) {
+      return this.participantCounts[roomId] || 0;
+    },
     joinRoom(event) {
       const room = event.target.getAttribute("data-room");
       this.$router.push(`/room?room=${room}`);
@@ -41,7 +54,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* Add your lobby-specific styles here */
 @import "../assets/styles/lobby.css";
 @import "../assets/styles/main.css";

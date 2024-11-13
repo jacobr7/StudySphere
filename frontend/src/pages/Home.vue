@@ -237,9 +237,10 @@ END:VCALENDAR`;
   background-color: #141B4D;
   color: #8A704C;
   padding: 20px;
-  min-height: 100vh; /* Ensures background fills the viewport on smaller screens */
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+
 }
 
 .card {

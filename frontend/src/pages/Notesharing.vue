@@ -102,6 +102,7 @@ export default {
   padding: 20px;
   background-color: #f8f9fa;
   height: calc(100vh - 80px); /* Ensure content area takes up the height minus navbar */
+  flex-grow: 1;
 }
 
 /* Apply left margin only when sidebar is visible */

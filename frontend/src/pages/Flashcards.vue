@@ -237,7 +237,7 @@ body {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #ff5a5f;
+  background-color: #8A704C;
   color: white;
   border: none;
   border-radius: 50%;
@@ -254,11 +254,23 @@ body {
   position: fixed;
   bottom: 20px;
   left: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 0 10px;
   background-color: #3b82f6;
   color: white;
-  font-size: 25px;
-  border-radius: 5%;
 }
+  
+.floating-btn2 {
+  background-color: #2563eb;
+}
+
+
+
 .study-btn {
   position: fixed;
   bottom: 20px;

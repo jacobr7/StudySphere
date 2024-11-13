@@ -14,7 +14,7 @@
         <div v-if="previewUrl">
           <h3>Preview:</h3>
           <img v-if="isImage" :src="previewUrl" alt="Image Preview" style="max-width: 300px; max-height: 300px;" />
-          <iframe v-if="isPDF" :src="previewUrl" style="width: 100%; height: 400px;" frameborder="0"></iframe>
+          <iframe v-if="isPDF" :src="previewUrl" style="width: 100%; height: 200px;" frameborder="0"></iframe>
           <p v-if="isText">Text Preview: {{ textPreview }}</p>
         </div>
         <div class="button-group">

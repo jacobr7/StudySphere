@@ -60,8 +60,8 @@
     </div>
 
     <!-- Sign Up Form Modal -->
-<div v-if="showSignUpModal" class="modal d-block" role="dialog" style="background: rgba(0, 0, 0, 0.5)">
-  <div class="modal-dialog" role="document">
+    <div v-if="showSignUpModal" class="modal d-block" role="dialog" style="background: rgba(0, 0, 0, 0.5)">
+    <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Sign Up for {{ selectedEvent?.name }}</h5>
@@ -237,7 +237,9 @@ END:VCALENDAR`;
   background-color: #141B4D;
   color: #8A704C;
   padding: 20px;
-  height: 100vh; /* Full height */
+  min-height: 100vh; /* Ensures background fills the viewport on smaller screens */
+  display: flex;
+  flex-direction: column;
 }
 
 .card {

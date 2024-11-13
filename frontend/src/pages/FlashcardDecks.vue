@@ -43,7 +43,7 @@
                     <option value="red">Red</option>
                     <option value="teal">Teal</option>
                     <option value="gray">Gray</option>
-                    <option value="dark">Dark</option>
+                    <option value="dark">Black</option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Deck</button>

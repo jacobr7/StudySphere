@@ -38,5 +38,6 @@ body {
   flex: 1; /* Make this take up the remaining height */
   display: flex;
   flex-direction: column;
+  
 }
 </style>

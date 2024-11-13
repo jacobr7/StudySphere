@@ -1,40 +1,66 @@
 // src/services/AgoraService.js
 import AgoraRTC from "agora-rtc-sdk-ng";
-import { addUserToRoom, removeUserFromRoom , getActiveUserCount} from "./Fire.js";
-import { getCurrentUserUid } from '../firebase.js'
-import { getAuth  } from 'firebase/auth';
+import { getActiveUserCount, addUserToRoom, removeUserFromRoom } from "./Fire.js";
+import { getCurrentUserUid } from '../firebase.js';
+import { getAuth } from 'firebase/auth';
 
 const APP_ID = "6d072dc830584bd79a4ee2f7fc36e9f3"; // Replace with your actual APP_ID
 
 let uid = getCurrentUserUid();
-// if (!uid) {
-//   uid = String(Math.floor(Math.random() * 10000));
-//   sessionStorage.setItem("uid", uid);
-// }
-
 let token = null;
 let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-
 let localTracks = [];
 let remoteUsers = {};
 
-
-
 const joinRoomInit = async (roomId = "main", uid) => {
-  console.log("roomId:" + roomId)
-  let user = uid;
-  let userCount = getActiveUserCount(roomId);
-  console.log('this user count' + userCount)
-  console.log("uid:" + user)
+  console.log("roomId:" + roomId);
 
+  // Check the number of users in the database for the room
+  try {
+    const userCount = await getActiveUserCount(roomId); // Assume this function returns the current user count
+    console.log(`Current user count in room ${roomId}: ${userCount}`);
+
+    // If the room is full, redirect to the lobby
+    if (userCount >= 30) {
+      console.log("Room is full, redirecting to the lobby.");
+      window.location.href = "/lobby"; // Redirect to the lobby
+      return; // Exit the function to prevent further execution
+    }
+  } catch (error) {
+    console.error("Error checking user count:", error);
+    return; // Exit if there's an error fetching the count
+  }
+
+  // Proceed to join the room if it's not full
+  let user = uid;
   await client.join(APP_ID, roomId, token, uid);
   await addUserToRoom(roomId, uid);
 
+  // Subscribe to existing users
+  client.remoteUsers.forEach(async (existingUser) => {
+    if (existingUser.videoTrack) {
+      await client.subscribe(existingUser, "video");
+      console.log(`Subscribed to existing user: ${existingUser.uid}`);
+
+      if (!document.getElementById(`user-container-${existingUser.uid}`)) {
+        const playerHTML = `<div class="video__container" id="user-container-${existingUser.uid}">
+                              <div class="video-player" id="user-${existingUser.uid}"></div>
+                            </div>`;
+        document.getElementById("videos__container").insertAdjacentHTML("beforeend", playerHTML);
+      }
+
+      existingUser.videoTrack.play(`user-${existingUser.uid}`);
+    }
+  });
+
   client.on("user-published", handleUserPublished);
+  client.on("user-unpublished", handleUserUnpublished);
   client.on("user-left", handleUserLeft);
 
   await joinStream();
 };
+
+
 
 const joinStream = async () => {
   localTracks = await AgoraRTC.createCameraVideoTrack();
@@ -43,16 +69,13 @@ const joinStream = async () => {
                       </div>`;
   document.getElementById("videos__container").insertAdjacentHTML("beforeend", playerHTML);
   localTracks.play(`user-${uid}`);
-  console.log("uid:" + uid)
 
   await client.publish(localTracks);
 };
 
 const leaveRoom = async (roomId = "main") => {
-  console.log("roomId:" + roomId) 
   const auth = getAuth();
-  const firebaseUid = auth.currentUser ? auth.currentUser.uid : uid; // Use Firebase UID if authenticated
-  console.log("uid:" + firebaseUid)
+  const firebaseUid = auth.currentUser ? auth.currentUser.uid : uid;
 
   if (!roomId || typeof roomId !== "string") {
     throw new Error("Invalid roomId: It must be a defined string.");
@@ -64,22 +87,22 @@ const leaveRoom = async (roomId = "main") => {
   try {
     console.log(`User ${firebaseUid} is being removed from room ${roomId}`);
     removeUserFromRoom(roomId, firebaseUid);
-    console.log(`User ${firebaseUid} removed from room ${roomId}`);
 
     // Leave the Agora room
     await client.leave();
     localTracks.stop();
     localTracks.close();
-    
   } catch (error) {
     console.error("Error leaving the room:", error);
   }
 };
 
-
 const handleUserPublished = async (user, mediaType) => {
+  if (mediaType !== "video") return; // Skip handling audio streams
+
   remoteUsers[user.uid] = user;
   await client.subscribe(user, mediaType);
+  console.log(`Subscribed to video of user: ${user.uid}`);
 
   if (!document.getElementById(`user-container-${user.uid}`)) {
     const playerHTML = `<div class="video__container" id="user-container-${user.uid}">
@@ -88,12 +111,21 @@ const handleUserPublished = async (user, mediaType) => {
     document.getElementById("videos__container").insertAdjacentHTML("beforeend", playerHTML);
   }
 
-  if (mediaType === "video") {
-    user.videoTrack.play(`user-${user.uid}`);
+  user.videoTrack.play(`user-${user.uid}`);
+};
+
+const handleUserUnpublished = (user, mediaType) => {
+  if (mediaType !== "video") return; // Only handle video unpublishing
+  console.log(`User ${user.uid} unpublished video`);
+
+  const container = document.getElementById(`user-container-${user.uid}`);
+  if (container) {
+    container.remove();
   }
 };
 
-const handleUserLeft = async (user) => {
+const handleUserLeft = (user) => {
+  console.log(`User ${user.uid} has left the room`);
   delete remoteUsers[user.uid];
   const container = document.getElementById(`user-container-${user.uid}`);
   if (container) {
@@ -101,14 +133,17 @@ const handleUserLeft = async (user) => {
   }
 };
 
+// Toggle camera functionality
 const toggleCamera = async (e) => {
   const button = e.currentTarget;
   if (localTracks.muted) {
     await localTracks.setMuted(false);
     button.classList.add("active");
+    console.log("Camera turned on");
   } else {
     await localTracks.setMuted(true);
     button.classList.remove("active");
+    console.log("Camera turned off");
   }
 };
 

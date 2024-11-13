@@ -36,14 +36,17 @@ export default {
         if (user) {
             joinRoomInit(this.roomId, user.uid);
         } else {
-            router.push("/login");
+            router.push("/sign-in");
         }
         });
 
+        window.addEventListener("beforeunload", this.handleLeaveRoom);
+        window.addEventListener("popstate", this.handleLeaveRoom); // Handle browser navigation
   },
   beforeUnmount() {
     // Ensure the user disconnects when the component is destroyed
     this.handleLeaveRoom();
+    window.removeEventListener("beforeunload", this.handleLeaveRoom);
     window.removeEventListener("popstate", this.handleLeaveRoom);
   },
   methods: {

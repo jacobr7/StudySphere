@@ -13,9 +13,10 @@
             :id="'participantCount' + room"
             class="rooms"
             :data-room="room"
+            :disabled="isRoomFull(room)"
             @click="joinRoom"
           >
-            Room {{ room }} 0/30
+            Room {{ room }} {{ getParticipantCount(room) }}/30
           </button>
         </div>
       </div>
@@ -25,30 +26,42 @@
 
 <script>
 import Navbar from '../components/Navbar.vue';
+import { getActiveUserCount} from "../services/Fire.js";
+
 export default {
   components: { Navbar },
   data() {
     return {
       channelNames: ["1", "2", "3"], // Replace with your actual channel names
-      participantCount: {},
+      participantCounts: {},
+      timer: null,
     };
-  },async mounted() {
+  },
+  mounted() {
     this.updateParticipantCounts();
-    setInterval(this.updateParticipantCounts, 5000); // Refresh counts every 5 seconds
+    setInterval(this.updateParticipantCounts, 1000); // Refresh counts every 5 seconds
   },
   methods: {
     async updateParticipantCounts() {
-      await checkParticipantCountForAllRooms(this.channelNames);
-      this.channelNames.forEach((room) => {
-        this.$set(this.participantCounts, room, RoomParticipant(room));
-      });
+      for (let room of this.channelNames) {
+        const count = await getActiveUserCount(room);
+        this.participantCounts[room] = count;
+      }
     },
     getParticipantCount(roomId) {
       return this.participantCounts[roomId] || 0;
     },
+    isRoomFull(roomId) {
+      return this.getParticipantCount(roomId) >= 30;
+    },
     joinRoom(event) {
       const room = event.target.getAttribute("data-room");
-      this.$router.push(`/room?room=${room}`);
+      if (!this.isRoomFull(room)){
+        this.$router.push(`/room?room=${room}`);
+      } else {
+        console.log("Room is full. You cannot join.")
+      }
+      
     },
   },
 };

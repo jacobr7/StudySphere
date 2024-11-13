@@ -1,15 +1,20 @@
 <template>
   <div class="note-sharing">
-    <Sidebar v-if="!isSmallScreen" class="sidebar" :refreshSuggestions="refreshSuggestions" @searchQuery="handleSearchQuery" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
-    <FloatingUploadButton class="highestzindex" v-if="isSmallScreen" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel"/>
+    <Sidebar v-if="!isSmallScreen" :class="['sidebar', { 'open': isOpen }]" :refreshSuggestions="refreshSuggestions"
+      @searchQuery="handleSearchQuery" @toggle-notes="toggleNotes" :showAllNotes="showAllNotes"
+      @open-upload-modal="openUploadModel" />
+    <FloatingUploadButton class="highestzindex" v-if="isSmallScreen" @toggle-notes="toggleNotes"
+      :showAllNotes="showAllNotes" @open-upload-modal="openUploadModel" />
 
-    <UploadModal @file-uploaded="handleFileUploaded" :isVisible="isModalVisible" @close="closeUploadModal"/>
+    <UploadModal @file-uploaded="handleFileUploaded" :isVisible="isModalVisible" @close="closeUploadModal" />
     <ViewModal v-if="viewModalVisible" :file="selectedFile" @close="closeViewModal" />
     <!-- Content Area (No 'main-content' wrapper) -->
     <div :class="['content-area', { 'no-sidebar-margin': isSmallScreen }]">
-      <SearchBar v-if="isSmallScreen" class="search-bar-top" :refreshSuggestions="refreshSuggestions" @searchQuery="handleSearchQuery"/>
-      <FileList @open-view-modal="openViewModal" :refreshFiles="refreshFiles" :searchQuery="searchQuery" :showAllNotes="showAllNotes"/>
-    </div> 
+      <SearchBar v-if="isSmallScreen" class="search-bar-top" :refreshSuggestions="refreshSuggestions"
+        @searchQuery="handleSearchQuery" />
+      <FileList @open-view-modal="openViewModal" :refreshFiles="refreshFiles" :searchQuery="searchQuery"
+        :showAllNotes="showAllNotes" />
+    </div>
   </div>
 </template>
 
@@ -23,8 +28,8 @@ import SearchBar from '../components/SearchBar.vue';
 
 export default {
   name: 'Notesharing',
-  data(){
-    return{
+  data() {
+    return {
       isModalVisible: false,
       viewModalVisible: false,
       selectedFileForViewing: null,
@@ -33,6 +38,7 @@ export default {
       refreshFiles: false, //Data property to signal FileList,
       refreshSuggestions: false,
       isSmallScreen: window.innerWidth <= 768, // Initial screen size check
+      isOpen: false, // Sidebar is initially closed
     }
   },
   components: {
@@ -44,29 +50,29 @@ export default {
     ViewModal,
   },
   methods: {
-    openUploadModel(){
+    openUploadModel() {
       this.isModalVisible = true;
     },
-    closeUploadModal(){
+    closeUploadModal() {
       this.isModalVisible = false;
     },
     toggleNotes(showAll) {// showAll is the parameter that sidebar.vue emit to which is !this.showAllNotes
       this.showAllNotes = showAll;
     },
-    handleSearchQuery(searchQuery){
+    handleSearchQuery(searchQuery) {
       this.searchQuery = searchQuery;
     },
-    handleFileUploaded(){
+    handleFileUploaded() {
       // Trigger Sidebar's suggestion update and FileList refresh
       this.refreshSuggestions = !this.refreshSuggestions; // Toggle to trigger reactivity
 
       this.refreshFiles = !this.refreshFiles;
     },
-    openViewModal(file){
+    openViewModal(file) {
       this.selectedFile = file;
       this.viewModalVisible = true;
     },
-    closeViewModal(){
+    closeViewModal() {
       this.selectedFile = null;
       this.viewModalVisible = false;
     },
@@ -76,6 +82,10 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.handleResize); // Listen for resize events
+    // Trigger the sidebar to slide in when the component mounts
+    setTimeout(() => {
+      this.isOpen = true;
+    }, 100); // Delay to allow the page to load before animating
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize); // Clean up event listener
@@ -87,23 +97,34 @@ export default {
 .note-sharing {
   display: flex;
   flex-direction: column;
-  height: 100%; 
+  height: 100%;
   flex: 1;
 }
 
 .sidebar {
   width: 250px;
   position: fixed;
-  top: 80px; /* Align with navbar height */
+  top: 80px;
+  /* Align with navbar height */
   height: calc(100vh - 80px);
   background-color: #444;
+  left: -250px;
+  transition: left 0.5s ease-in-out;
+  /* Smooth transition */
+}
+
+.sidebar.open {
+  left: 0;
+  /* Slide in */
 }
 
 .content-area {
-  flex: 1; /* Take up remaining space */
+  flex: 1;
+  /* Take up remaining space */
   padding: 20px;
   background-color: #f8f9fa;
-  height: calc(100vh - 80px); /* Adjust to ensure it doesn’t exceed the viewport height */
+  height: calc(100vh - 80px);
+  /* Adjust to ensure it doesn’t exceed the viewport height */
 }
 
 /* Apply left margin only when sidebar is visible */
@@ -128,7 +149,7 @@ export default {
 
 }
 
-.highestzindex{
+.highestzindex {
   z-index: 15;
 }
 

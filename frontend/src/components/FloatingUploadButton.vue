@@ -1,22 +1,21 @@
 <template>
-    <div class="floating-upload-container">
-      <!-- Main Floating Button -->
-      <button class="floating-upload-button" @click="toggleExpanded">
-        <span class="plus-icon" v-if="!isExpanded">+</span>
-        <span class="close-icon" v-if="isExpanded">×</span>
+  <div class="floating-upload-container">
+    <!-- Expanded Buttons -->
+    <div v-if="isExpanded" class="expanded-buttons">
+      <button class="upload-option" @click="toggleNotes" :style="{ animationDelay: '0.4s' }">
+        {{ showAllNotes ? "Your" : "All" }}
       </button>
-  
-      <!-- Expanded Buttons -->
-      <div v-if="isExpanded" class="expanded-buttons">
-        <button class="upload-option" @click="toggleNotes">
-            {{ showAllNotes ? "Your" : "All" }}
-        </button>
-        <button class="upload-option" @click="openUploadModel">
-          <img src="../assets/file.png" alt="Upload">
-        </button>
-      </div>
+      <button class="upload-option" @click="openUploadModel" :style="{ animationDelay: '0.2s' }">
+        <img src="../assets/file.png" alt="Upload">
+      </button>
     </div>
-  </template>
+    <!-- Main Floating Button -->
+    <button class="floating-upload-button" @click="toggleExpanded">
+      <span class="plus-icon" v-if="!isExpanded">+</span>
+      <span class="close-icon" v-if="isExpanded">×</span>
+    </button>
+  </div>
+</template>
 
 <script>
 export default {
@@ -65,18 +64,33 @@ export default {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
   z-index: 10;
 }
 
 .floating-upload-button:hover {
   background-color: #45a049;
+  transform: scale(1.1); /* Slightly grow the button on hover */
+}
+
+.floating-upload-button:active {
+  transform: scale(1); /* Ensure button returns to normal size when clicked */
 }
 
 .expanded-buttons {
   display: flex;
   flex-direction: column;
   margin-top: 10px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: expandButtons 0.5s ease forwards;
+}
+
+@keyframes expandButtons {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .upload-option {
@@ -93,14 +107,25 @@ export default {
   align-items: center;
   justify-content: center;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  opacity: 0; /* Initially hidden */
+  transform: translateY(10px); /* Start from a slightly lower position */
+  animation: slideUp 0.4s ease forwards;
 }
 
-.upload-option img{
-    width: 20px;
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.upload-option img {
+  width: 20px;
 }
 
 .upload-option:hover {
   background-color: #45a049;
+  transform: translateY(-2px); /* Slight hover effect */
 }
 </style>

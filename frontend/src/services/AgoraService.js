@@ -3,6 +3,7 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import { getActiveUserCount, addUserToRoom, removeUserFromRoom } from "./Fire.js";
 import { getCurrentUserUid } from '../firebase.js';
 import { getAuth } from 'firebase/auth';
+import router from '../router';
 
 const APP_ID = "6d072dc830584bd79a4ee2f7fc36e9f3"; // Replace with your actual APP_ID
 
@@ -11,6 +12,7 @@ let token = null;
 let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 let localTracks = [];
 let remoteUsers = {};
+
 
 const joinRoomInit = async (roomId = "main", uid) => {
   console.log("roomId:" + roomId);
@@ -23,7 +25,7 @@ const joinRoomInit = async (roomId = "main", uid) => {
     // If the room is full, redirect to the lobby
     if (userCount >= 30) {
       console.log("Room is full, redirecting to the lobby.");
-      window.location.href = "/lobby"; // Redirect to the lobby
+      router.push("/lobby"); // Redirect to the lobby
       return; // Exit the function to prevent further execution
     }
   } catch (error) {

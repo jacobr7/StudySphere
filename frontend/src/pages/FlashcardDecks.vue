@@ -206,14 +206,13 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #ff5a5f;
+    background-color: #8A704C;
     color: white;
     border: none;
     border-radius: 50%;
     width: 55px;
     height: 55px;
     font-size: 2em;
-    padding-bottom: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -222,8 +221,9 @@
   }
   
   .floating-btn:hover {
-      background-color: #e04848;
+    background-color: #6A5A3E;
   }
+
   
   /* Modal Styling */
   .modal-content {

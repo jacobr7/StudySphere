@@ -1,6 +1,6 @@
 # StudySphere
 
-StudySphere is an Web Application to improve learning and host school activities
+StudySphere is an Web Application to improve learning and host school activities.
 
 ## List of Contents
 - [Features](#features)

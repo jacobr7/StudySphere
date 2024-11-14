@@ -135,6 +135,11 @@ const closeMenu = () => {
   margin-left: auto;
 }
 
+.router-link-active {
+  font-weight: bold;
+  font-size: 18px;
+}
+
 .navbar-links a {
   position: relative;
   display: inline-block;

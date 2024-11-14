@@ -16,7 +16,7 @@
           </div>
 
           <div class="button-container row mt-auto"><!-- http://localhost:5000/download/ -->
-            <a class="download-button col" :href="'https://study-sphere-z8xi.vercel.app/download' + file._id" target="_blank" :download="file.filename">Download</a>
+            <a class="download-button col" :href="'https://study-sphere-z8xi.vercel.app/download/' + file._id" target="_blank" :download="file.filename">Download</a>
             <button class="view-button col" @click="openViewModal(file)">View</button>
 
             <!-- Conditionally render Delete button if user is the file owner -->

@@ -107,6 +107,7 @@ export default {
 
 .dropdown-item:hover {
   background-color: #f0f0f0;
+  color: #002638
 }
 
 

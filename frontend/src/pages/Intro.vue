@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
     <div class="study-app-page">
       <!-- Intro Section -->
       <section class="intro-section">
@@ -65,13 +66,25 @@
   </template>
   
   <script>
+  import Navbar from '../components/Navbar.vue';
+  import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+  const auth = getAuth();
+
 export default {
+  components: { Navbar },
   data() {
     return {
     };
   },
   mounted() {
-  this.startAutoScroll();
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          this.startAutoScroll();
+        } else {
+          this.$router.push('/');
+        }
+      });
 },
 
 methods: {
@@ -166,7 +179,7 @@ methods: {
 
 .carousel-intro-item {
   position: relative;
-  flex: 0 0 auto;
+  flex: 0 0 300px;
   width: 250px; /* Adjust width as needed */
   transform: scale(0.9); /* Slightly scale down for effect */
   transition: transform 0.3s ease-in-out, z-index 0.3s ease;
@@ -196,6 +209,105 @@ h2 {
 
 p {
   color: black;
+}
+
+/* General adjustments for smaller screens */
+@media (max-width: 768px) {
+  .intro-section h2,
+  .events-section h2,
+  .note-sharing-section h2,
+  .forum-section h2,
+  .flashcards-section h2,
+  .study-rooms-section h2 {
+    font-size: 1.5rem; /* Reduce font size */
+  }
+
+  .intro-section .logo {
+    width: 200px; /* Scale down the logo */
+  }
+
+  .note-img,
+  .flashcards-img,
+  .forum-img,
+  .study-img {
+    width: 200px; /* Reduce image width */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  /* Event section images */
+  .carousel-intro-item {
+    flex: 0 0 100%; /* Show one image at a time */
+    width: 100%; /* Full width for smaller screens */
+    margin: 0 auto; /* Center the item */
+  }
+
+  .carousel-intro-item img {
+    width: 80%; /* Scale down the images */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-section h2,
+  .events-section h2,
+  .note-sharing-section h2,
+  .forum-section h2,
+  .flashcards-section h2,
+  .study-rooms-section h2 {
+    font-size: 1.2rem; /* Further reduce font size */
+  }
+
+  .note-img,
+  .flashcards-img,
+  .forum-img,
+  .study-img {
+    width: 150px; /* Further reduce image width */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  /* Event section images */
+  .carousel-intro-item img {
+    width: 70%; /* Further scale down the images for very small screens */
+    height: auto; /* Maintain aspect ratio */
+  }
+}
+
+
+/* Adjustments for larger screens */
+@media (min-width: 1200px) {
+  .intro-section h2,
+  .events-section h2,
+  .note-sharing-section h2,
+  .forum-section h2,
+  .flashcards-section h2,
+  .study-rooms-section h2 {
+    font-size: 2.5rem; /* Increase font size for larger screens */
+  }
+
+  .intro-section .logo {
+    width: 400px; /* Scale up the logo */
+  }
+
+  .note-img,
+  .flashcards-img,
+  .forum-img,
+  .study-img {
+    width: 400px; /* Increase image width */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  /* Event section images */
+  .carousel-intro-item {
+    flex: 0 0 400px; /* Show larger images */
+    margin: 0 auto; /* Center the item */
+  }
+
+  .carousel-intro-item img {
+    width: 100%; /* Ensure images take the full width of the item */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px;
+  }
 }
 
 </style>

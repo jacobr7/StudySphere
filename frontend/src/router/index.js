@@ -1,6 +1,7 @@
 // src/router/index.js
 //1)Import necessary functions and components
 import { createRouter, createWebHistory } from 'vue-router';
+import Intro from '../pages/Intro.vue';
 import Home from '../pages/Home.vue';
 import FlashcardDecks from '../pages/FlashcardDecks.vue';
 import Notesharing from '../pages/Notesharing.vue';
@@ -10,13 +11,13 @@ import StudyPage from '../pages/StudyPage.vue';
 import Forum from '../pages/Forum.vue';
 import Room from '../pages/Room.vue';
 import Lobby from '../pages/Lobby.vue';
-import Intro from '../pages/Intro.vue';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 
 // 2. Define the routes
 const routes = [
+  {path: '/intro',name: 'Intro',component: Intro,},
     { 
     path: '/',  // The URL path (default or home route)
     name: 'Home',   // Optional: Used to refer to the route programmatically
@@ -41,7 +42,6 @@ const routes = [
   {path: '/forum',name: 'Forum',component: Forum,},
   {path: '/room',name: 'Room',component: Room,},
   {path: '/lobby',name: 'Lobby',component: Lobby,},
-  {path: '/intro',name: 'Intro',component: Intro,},
 
   
 ];

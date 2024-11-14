@@ -4,7 +4,28 @@
     <div class="container" >
       <div id="room__container">
         <section id="stream__container">
-          <div id="videos__container"></div>
+          <div id="videos__container">
+            <div class="video__container" id="user-container-proxy">
+                        <div class="video-player" id="user-proxy">
+                          <img class="proxy-img" src="../assets/images/proxy1.jpeg" alt="proxy"/>
+                        </div>
+                      </div>
+                      <div class="video__container" id="user-container-proxy">
+                        <div class="video-player" id="user-proxy">
+                          <img class="proxy-img" src="../assets/images/proxy2.jpeg" alt="proxy"/>
+                        </div>
+                      </div>
+                      <div class="video__container" id="user-container-proxy">
+                        <div class="video-player" id="user-proxy">
+                          <img class="proxy-img" src="../assets/images/proxy3.jpeg" alt="proxy"/>
+                        </div>
+                      </div>
+                      <div class="video__container" id="user-container-proxy">
+                        <div class="video-player" id="user-proxy">
+                          <img class="proxy-img" src="../assets/images/proxy4.jpeg" alt="proxy"/>
+                        </div>
+                      </div>
+          </div>
           <StreamActions />
         </section>
       </div>
@@ -64,6 +85,10 @@ export default {
 </script>
 
 <style scoped>
-
+.proxy-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
 
 </style>

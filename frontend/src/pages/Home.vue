@@ -40,14 +40,14 @@
       <!-- Navigation Arrows -->
       <div class="d-flex justify-content-between mt-4">
         <button 
-          class="btn btn-outline-light" 
+          class="btn btn-outline-dark" 
           :disabled="currentPage === 0" 
           @click="previousPage"
         >
           &lt; Prev
         </button>
         <button 
-          class="btn btn-outline-light" 
+          class="btn btn-outline-dark" 
           :disabled="currentPage >= maxPage" 
           @click="nextPage"
         >
@@ -234,8 +234,8 @@ END:VCALENDAR`;
 
 <style scoped>
 .event-page {
-  background-color: #141B4D;
-  color: #8A704C;
+  background-color: #f9f9f9;
+  color: #00A3E0;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -244,8 +244,8 @@ END:VCALENDAR`;
 }
 
 .card {
-  background-color: #2c3e50;
-  color: white;
+  background-color: #eee;
+  color: black;
 }
 
 .card-img-top {
@@ -276,7 +276,7 @@ END:VCALENDAR`;
 }
 
 button:disabled {
-  background-color: #888;
+  background-color: rgb(255, 215, 0);
   cursor: not-allowed;
 }
 
@@ -290,7 +290,8 @@ button:disabled {
 }
 
 button.btn-warning {
-  background-color: #f1c40f;
+  background-color: #00A3E0 ;
+  color: white;
   border: none;
 }
 </style>

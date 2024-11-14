@@ -110,8 +110,11 @@ export default {
       }
     },
     async confirmDeleteDeck(deckId) {
-      const user = auth.currentUser;
-      if (user) {
+    const user = auth.currentUser;
+    if (user) {
+      // Show a confirmation dialog
+      const isConfirmed = window.confirm("Are you sure you want to delete this deck?");
+      if (isConfirmed) {
         try {
           await deleteDoc(doc(db, "users", user.uid, "decks", deckId));
           this.loadDecks(user.uid); // Reload decks after deletion
@@ -119,7 +122,8 @@ export default {
           console.error("Error deleting deck:", error);
         }
       }
-    },
+    }
+  },
     async loadDecks(userId) {
       this.loading = true; // Start loading indicator
       const decks = [];

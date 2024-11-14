@@ -15,6 +15,7 @@
         <div class="form-group">
           <label for="email">Email:</label>
           <input type="email" id="email" class="form-control" v-model="email" placeholder="Enter Email" required>
+          <div class="text-danger">{{ emailError }}</div> <!-- Display email error message here -->
         </div>
         <div class="form-group">
           <label for="password">Password:</label>

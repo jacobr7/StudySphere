@@ -14,10 +14,10 @@
             :id="'participantCount' + room"
             class="rooms"
             :data-room="room"
-            :disabled="false"
+            :disabled="isRoomFull(room)"
             @click="joinRoom"
           >
-            Room {{ room }} 030
+            Room {{ room }} {{ getParticipantCount(room)}}/30
           </button>
         </div>
       </div>
@@ -39,40 +39,40 @@ export default {
       participantCounts: {},
       timer: null,
     };
-//   },
-//   mounted() {
-    // const auth = getAuth();
-    //       onAuthStateChanged(auth, (user) => {
-    //           if (user) {
-    //               this.updateParticipantCounts();
-    //               setInterval(this.updateParticipantCounts, 1000); // Refresh counts every 5 seconds
-    //           } else {
-    //               console.log("No user is logged in.");
-    //           }
-    //       });
-//   },
-//   methods: {
-//     async updateParticipantCounts() {
-//       for (let room of this.channelNames) {
-//         const count = await getActiveUserCount(room);
-//         this.participantCounts[room] = count;
-//       }
-//     },
-//     getParticipantCount(roomId) {
-//       return this.participantCounts[roomId] || 0;
-//     },
-//     isRoomFull(roomId) {
-//       return this.getParticipantCount(roomId) >= 30;
-//     },
-//     joinRoom(event) {
-//       const room = event.target.getAttribute("data-room");
-//       if (!this.isRoomFull(room)){
-//         this.$router.push(`/room?room=${room}`);
-//       } else {
-//         console.log("Room is full. You cannot join.")
-//       }
+  },
+  mounted() {
+    const auth = getAuth();
+          onAuthStateChanged(auth, (user) => {
+              if (user) {
+                  this.updateParticipantCounts();
+                  setInterval(this.updateParticipantCounts, 5000); // Refresh counts every 5 seconds
+              } else {
+                  console.log("No user is logged in.");
+              }
+          });
+  },
+  methods: {
+    async updateParticipantCounts() {
+      for (let room of this.channelNames) {
+        const count = await getActiveUserCount(room);
+        this.participantCounts[room] = count;
+      }
+    },
+    getParticipantCount(roomId) {
+      return this.participantCounts[roomId] || 0;
+    },
+    isRoomFull(roomId) {
+      return this.getParticipantCount(roomId) >= 30;
+    },
+    joinRoom(event) {
+      const room = event.target.getAttribute("data-room");
+      if (!this.isRoomFull(room)){
+        this.$router.push(`/room?room=${room}`);
+      } else {
+        console.log("Room is full. You cannot join.")
+      }
       
-    // },
+    },
   },
 };
 </script>

@@ -40,4 +40,124 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+
+#room__container {
+  position: relative;
+  display: grid;
+  gap: 3rem;
+}
+
+#stream__container {
+  justify-self: center;
+  width: 100%;
+  position: fixed;
+  overflow-y: auto;
+  height: 100%;
+  margin-right: 0;
+  margin-bottom: 0;
+  background-color: #E5E4E2;
+}
+
+
+#videos__container{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+  margin-bottom: 225px;
+}
+
+.video__container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #00A3E0;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 200px;
+  width: 300px;
+}
+
+
+.video-player {
+  height: 100%;
+  width: 100%;
+}
+
+.video-player video{
+  border-radius: 8px;
+}
+
+@media (max-width:1400px) {
+  .video__container{
+    height: 200px;
+    width: 300px;
+  }
+}
+
+
+@media (max-width: 1200px) {
+
+  #stream__container {
+    left: 0;
+  }
+}
+
+@media (max-width: 980px) {
+  #stream__container {
+    left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  #stream__container {
+    width: 100%;
+  }
+  
+  .video__container{
+    height: 150px;
+    width: 225px;
+  }
+  
+  #rooms__container {
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  background-color: #141B4D;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#lobby__form {
+  padding: 2em;
+}
+
+#rooms__container__header {
+  border-radius: 10px 10px 0 0;
+  padding: 10px;
+  text-align: center;
+  background-color: #363739;
+  margin: 0;
+  font-size: 18px;
+  font-size: 300;
+  line-height: 0;
+}
+
+#rooms{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+
+
+}
+
 </style>

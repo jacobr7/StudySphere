@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar />
-    <div class="container">
+    <div class="container" >
       <div id="room__container">
         <section id="stream__container">
           <div id="videos__container"></div>
@@ -63,7 +63,7 @@ export default {
 };
 </script>
 
-<style >
-@import "../assets/styles/room.css";
-@import "../assets/styles/main.css";
+<style scoped>
+
+
 </style>

@@ -5,7 +5,7 @@ import { getCurrentUserUid } from '../firebase.js';
 import { getAuth } from 'firebase/auth';
 import router from '../router';
 
-const APP_ID = "6d072dc830584bd79a4ee2f7fc36e9f3"; // Replace with your actual APP_ID
+const APP_ID = "fde7a37293e245f2b8e7338b067e1a92"; // Replace with your actual APP_ID
 
 let uid = getCurrentUserUid();
 let token = null;

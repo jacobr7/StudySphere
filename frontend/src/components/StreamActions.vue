@@ -25,4 +25,46 @@ export default {
 
 <style scoped>
 /* Stream action specific styles */
+.stream__actions {
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  border-radius: 8px;
+  background-color: #1a1a1a60;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  transform: translateX(-50%)
+}
+
+.stream__actions a,
+.stream__actions button {
+  cursor: pointer;
+  background-color: #4682B4;
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: all 0.2s ease-in-out;
+}
+
+.stream__actions a svg,
+.stream__actions button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: #00A3E0;
+}
+
+.stream__actions a.active,
+.stream__actions button.active,
+.stream__actions a:hover,
+.stream__actions button:hover {
+  background-color: #E3F2FD;
+}
+
 </style>

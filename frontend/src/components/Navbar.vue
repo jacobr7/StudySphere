@@ -1,13 +1,14 @@
 <template>
   <nav class="navbar">
     <div class="navbar-brand">
-      <img
-            class="logo"
-            src="../assets/images/StudySphere.svg"
-            alt="Site Logo"
-            style="filter: invert(96%) sepia(0%) saturate(7500%) hue-rotate(168deg) brightness(103%) contrast(102%);"
-          />
-      <h1 class="app-name">Study Sphere</h1> <!-- Replace with your app's name -->
+      <router-link class="nav-link" to="/" v-if="isLoggedIn"><img
+        class="logo"
+        src="../assets/images/StudySphere.svg"
+        alt="Site Logo"
+        style="filter: invert(100%) brightness(200%);"
+        /></router-link>
+
+      <router-link class="nav-link" to="/" v-if="isLoggedIn"><h1 class="app-name">Study Sphere</h1> </router-link><!-- Replace with your app's name -->
     </div>
 
     <div :class="['navbar-links', { open: isMenuOpen }]">
@@ -29,7 +30,11 @@
 
     <!-- Burger Icon for smaller screens -->
     <button class="burger-icon" @click="isMenuOpen = !isMenuOpen">
-      ☰
+        <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 18L20 18" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 12L20 12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 6L20 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
     </button>
 
   </nav>
@@ -74,8 +79,7 @@ const closeMenu = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
-  color: white;
+  background-color: #85D7FF;
   padding: 10px 20px;
   position: fixed;
   top: 0;
@@ -87,12 +91,13 @@ const closeMenu = () => {
 
 .navbar-brand {
   display: flex;
+  position: absolute;
   align-items: center;
   /* Align logo and name vertically */
 }
 
 .logo {
-  width: 50px;
+  width: 70px;
   /* Adjust size of the logo */
   height: auto;
   /* Maintain aspect ratio */
@@ -102,6 +107,11 @@ const closeMenu = () => {
 
 .burger-icon {
   display: none;
+  margin-left: auto;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  fill: white;
+  background: none;
 }
 
 .app-name {
@@ -109,19 +119,40 @@ const closeMenu = () => {
   /* Remove default margin from heading */
   font-size: 24px;
   /* Adjust font size as needed */
-  color:white;
+  color:#FFF;
 }
 
 .navbar-links {
-  display: flex;
+  margin-left: auto;
 }
 
-.nav-link {
+.navbar-links a {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  color: white; /* Adjust text color as needed */
+  padding-bottom: 5px;
   margin: 20px;
 }
 
+.navbar-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 3px; /* Adjust thickness as needed */
+  background: linear-gradient(90deg, #ff7e5f, #feb47b); /* Adjust gradient colors as needed */
+  transition: width 0.4s ease; /* Adjust the speed as needed */
+}
+
+.navbar-links a:hover::after {
+  width: 100%; /* Expands the line to full width only under the hovered link */
+}
+
+
 .logout {
-  background: linear-gradient(135deg, #444, #666);
+  background: linear-gradient(135deg, #4682B4, #00A3E0);
   color: white;
   padding: 10px 20px;
   border: none;
@@ -135,7 +166,7 @@ const closeMenu = () => {
 }
 
 .logout:hover {
-  background: linear-gradient(135deg, #666, #888);
+  background: linear-gradient(135deg, #00A3E0, #33BDF2);
   transform: scale(1.05);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
@@ -156,7 +187,7 @@ const closeMenu = () => {
     position: absolute;
     top: 80px;
     right: 0;
-    background-color: #333;
+    background-color: #5CBFF9;
     width: 100%;
     text-align: center;
     padding: 10px 0;

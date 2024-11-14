@@ -156,6 +156,40 @@ body {
   padding: 1rem;
 }
 
+.carousel-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  gap: 20px; /* Adjust for spacing between images */
+}
+
+.carousel-item {
+  position: relative;
+  flex: 0 0 auto;
+  width: 250px; /* Adjust width as needed */
+  transform: scale(0.9); /* Slightly scale down for effect */
+  transition: transform 0.5s ease-in-out, z-index 0.5s ease;
+  cursor: pointer;
+}
+
+.carousel-item:hover {
+  transform: scale(1); /* Scale up when hovered */
+  z-index: 10; /* Bring to front */
+}
+
+.carousel-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px; /* Rounded corners */
+}
+
+.carousel-item h3 {
+  margin-top: 10px;
+  color: #333; /* Adjust text color as needed */
+}
 
 
 }

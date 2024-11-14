@@ -9,6 +9,7 @@
         /></router-link>
 
       <router-link class="nav-link" to="/" v-if="isLoggedIn"><h1 class="app-name">Study Sphere</h1> </router-link><!-- Replace with your app's name -->
+      <router-link class="nav-link" to="/" v-if="!isLoggedIn"><h1 class="intro-app-name">Study Sphere</h1> </router-link>
     </div>
 
     <div :class="['navbar-links', { open: isMenuOpen }]">
@@ -115,6 +116,14 @@ const closeMenu = () => {
 }
 
 .app-name {
+  margin: 0;
+  /* Remove default margin from heading */
+  font-size: 24px;
+  /* Adjust font size as needed */
+  color:#FFF;
+}
+
+.intro-app-name {
   margin: 0;
   /* Remove default margin from heading */
   font-size: 24px;

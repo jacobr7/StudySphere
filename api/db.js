@@ -7,7 +7,12 @@ const DBPASSWORD = process.env.MONGODBPW;
 const MONGODB_URI = `mongodb+srv://Nickyking:${DBPASSWORD}@cluster0.hv6jw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Connect to the MongoDB database
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,  // Set server selection timeout
+  socketTimeoutMS: 45000,         // Set socket timeout
+})
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Error connecting to MongoDB:', error));
 

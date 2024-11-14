@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 export default {
@@ -55,21 +55,39 @@ export default {
       confirmPassword: "",
       agree: false,
       errorMessage: "",
-      successMessage: ""
+      successMessage: "",
+      emailError: "",
+      loading: false // Add loading state
     };
   },
   methods: {
+    validateEmail() {
+      if (!this.email.endsWith("smu.edu.sg")) {
+        this.emailError = "Please use your school email";
+        return false;
+      }
+      this.emailError = "";
+      return true;
+    },
     async register() {
       this.errorMessage = "";
       this.successMessage = "";
+      this.loading = true; // Set loading to true at the start of registration
 
       if (this.password !== this.confirmPassword) {
         this.errorMessage = "Passwords do not match.";
+        this.loading = false; // Stop loading if there's an error
         return;
       }
 
       if (!this.agree) {
         this.errorMessage = "You must agree to the Terms of Service.";
+        this.loading = false; // Stop loading if there's an error
+        return;
+      }
+
+      if (!this.validateEmail()) {
+        this.loading = false; // Stop loading if there's an error
         return;
       }
 
@@ -77,21 +95,33 @@ export default {
       const db = getFirestore();
 
       try {
+        // Create user account
         const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
         const user = userCredential.user;
 
+        // Set display name in Firebase Auth
         await updateProfile(user, { displayName: this.username });
 
+        // Store additional user info in Firestore
         await setDoc(doc(db, "users", user.uid), {
           username: this.username,
           email: this.email
         });
 
-        this.successMessage = "Account created successfully!";
-        
-        this.$router.push("/")
+        // Success message
+        this.successMessage = "Account created successfully! Redirecting you to login...";
+        this.loading = false; // Stop loading after success
+
+        // Sign the user out
+        await signOut(auth);
+
+        // Redirect to login page after a short delay
+        setTimeout(() => {
+          this.$router.push("/sign-in");
+        }, 2000);
       } catch (error) {
         this.errorMessage = error.message;
+        this.loading = false; // Stop loading if there's an error
       }
     }
   }

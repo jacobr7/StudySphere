@@ -234,7 +234,7 @@ app.get('/api/uniqueCourseCodes', async (req, res) => {
     const uniqueCourseCodes = await FileModel.aggregate([
       { $group: { _id: "$courseCode" } }, // Group by courseCode
       { $sort: { _id: 1 } } // Optional: sort alphabetically
-    ]);
+    ]).option({ maxTimeMS: 30000 }).exec;
 
     const courseCodes = uniqueCourseCodes.map(item => item._id);
 

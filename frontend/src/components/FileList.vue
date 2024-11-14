@@ -122,6 +122,7 @@ export default {
   /* Space between cards */
   margin: 20px 0;
   width: 100%;
+  flex-grow: 1;
 }
 
 .card {

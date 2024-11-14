@@ -16,11 +16,11 @@
           </div>
 
           <div class="button-container row mt-auto"><!-- http://localhost:5000/download/ -->
-            <a class="download-button col-6" :href="'https://study-sphere-z8xi.vercel.app/download' + file._id" target="_blank" :download="file.filename">Download</a>
-            <button class="view-button col-4" @click="openViewModal(file)">View</button>
+            <a class="download-button col" :href="'https://study-sphere-z8xi.vercel.app/download' + file._id" target="_blank" :download="file.filename">Download</a>
+            <button class="view-button col" @click="openViewModal(file)">View</button>
 
             <!-- Conditionally render Delete button if user is the file owner -->
-            <button v-if="isUserFile(file)" class="delete-button col-4" @click="deleteFile(file._id)">Delete</button>
+            <button v-if="isUserFile(file)" class="delete-button col" @click="deleteFile(file._id)">Delete</button>
           </div>
 
         </div>
@@ -155,36 +155,48 @@ export default {
 
 .button-container {
   display: flex;
-  /* Align buttons horizontally */
-  gap: 10px;
-  /* Space between buttons */
-  justify-content: center;
+  gap: 5px;
+  justify-content: space-between;
   width: 100%;
+  padding: 8px 0;
 }
 
 .download-button,
-.view-button {
-  background-color: #007bff;
+.view-button,
+.delete-button {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
   color: white;
-  padding: 8px 16px;
   border: none;
   border-radius: 4px;
-  text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.view-button {
-  background-color: #28a745;
-  /* Green button for 'View' */
-}
-
-.view-button:hover {
-  background-color: #218838;
-  /* Darker green on hover */
+.download-button {
+  background-color: #007bff;
 }
 
 .download-button:hover {
   background-color: #0056b3;
+}
+
+.view-button {
+  background-color: #28a745;
+}
+
+.view-button:hover {
+  background-color: #218838;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
 }
 
 @media (max-width: 768px) {

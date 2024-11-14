@@ -31,7 +31,7 @@
     </div>
 
     <!-- Floating Buttons -->
-    <button class="floating-btn2 btn btn-primary" @click="goBack">Back To Decks</button>
+    <button class="floating-btn2 btn btn-primary" @click="goBack">< Back To Decks</button>
     <button class="study-btn btn btn-success" @click="goToStudyPage">Study</button>
     <button class="floating-btn btn btn-info" @click="openAddFlashcardModal">
       <svg class="pluslogo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -250,21 +250,83 @@ body {
 }
 
 /* Floating Buttons */
-.floating-btn, .floating-btn2, .study-btn {
+.floating-btn {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #00A3E0;
+  background-color: #00A3E0;;
   border: none;
   border-radius: 50%;
   width: 55px;
   height: 55px;
+  line-height: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 1.5rem;
-  cursor: pointer;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 }
+.pluslogo{
+    width: 30px;
+    height: 30px;
+  }
+
+
+.floating-btn:hover {
+  background-color:#0b8ebe;
+}
+
+.floating-btn2 {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 0 10px;
+  color: white;
+  font-weight: bold;
+  background-color: #3b82f6;
+}
+  
+.floating-btn2:hover{
+  background-color: #2563eb;
+}
+
+.study-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 1.2em;
+  cursor: pointer;
+  font-weight: bold;
+}
+.study-btn:hover {
+  background-color: #45a049;
+}
+
+/* Modal styling */
+.modal-content {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.modal-header {
+  background-color: #85D7FF ;
+  color: white;
+}
+.modal-title {
+  font-weight: bold;
+}
+
+
+
 </style>

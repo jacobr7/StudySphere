@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <div class="container-fluid mt-4 d-flex">
       <!-- Sidebar (Categories) -->
       <div class="categories-sidebar col-lg-2 col-md-3 mb-4">
@@ -9,10 +9,11 @@
             <li class="list-group-item" @click="setCategory('All')" :class="{ active: selectedCategory === 'All' }">All</li>
             <li class="list-group-item" @click="setCategory('General')" :class="{ active: selectedCategory === 'General' }">General</li>
             <li class="list-group-item" @click="setCategory('Questions')" :class="{ active: selectedCategory === 'Questions' }">Questions</li>
-            <li class="list-group-item" @click="setCategory('Science')" :class="{ active: selectedCategory === 'Science' }">Science</li>
-            <li class="list-group-item" @click="setCategory('Math')" :class="{ active: selectedCategory === 'Math' }">Math</li>
-            <li class="list-group-item" @click="setCategory('Languages')" :class="{ active: selectedCategory === 'Languages' }">Languages</li>
-            <li class="list-group-item" @click="setCategory('Business')" :class="{ active: selectedCategory === 'Business' }">Business</li>
+            <li class="list-group-item" @click="setCategory('SCIS')" :class="{ active: selectedCategory === 'SCIS' }">SCIS</li>
+            <li class="list-group-item" @click="setCategory('SOA')" :class="{ active: selectedCategory === 'SOA' }">SOA</li>
+            <li class="list-group-item" @click="setCategory('SOL')" :class="{ active: selectedCategory === 'SOL' }">SOL</li>
+            <li class="list-group-item" @click="setCategory('SOB')" :class="{ active: selectedCategory === 'SOB' }">SOB</li>
+            <li class="list-group-item" @click="setCategory('SOSS')" :class="{ active: selectedCategory === 'SOSS' }">SOSS</li>
           </ul>
         </div>
       </div>
@@ -37,47 +38,47 @@
                 <select v-model="newPost.category" class="form-select" id="postCategory" required>
                   <option value="General">General</option>
                   <option value="Questions">Questions</option>
-                  <option value="Science">Science</option>
-                  <option value="Math">Math</option>
-                  <option value="Languages">Languages</option>
-                  <option value="Business">Business</option>
-                  <option value="Others">Others</option>
+                  <option value="SCIS">SCIS</option>
+                  <option value="SOA">SOA</option>
+                  <option value="SOL">SOL</option>
+                  <option value="SOB">SOB</option>
+                  <option value="SOSS">SOSS</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary">Post</button>
+              <button type="submit" class="btn btn-primary" style="background-color: #00A3E0; border: 0cm;">Post</button>
             </form>
           </div>
         </div>
 
         <!-- Display Forum Posts -->
-          <div v-for="post in posts" :key="post.id" class="card mb-4">
+        <div v-for="post in posts" :key="post.id" class="card mb-4">
           <div class="card-body position-relative">
 
             <!-- Dropdown for Edit/Delete -->
             <div v-if="user && post.ownerId === user.uid" class="top-right-dropdown">
-                <button class="dropdown-btn">⋮</button>
-                <div class="dropdown-content">
-                  <button @click="editPost(post)">Edit</button>
-                  <button @click="deletePost(post.id)">Delete</button>
-                </div>
+              <button class="dropdown-btn">⋮</button>
+              <div class="dropdown-content">
+                <button @click="editPost(post)">Edit</button>
+                <button @click="deletePost(post.id)">Delete</button>
+              </div>
             </div>
 
             <!-- Conditional Rendering for Edit Form or Post Display -->
             <template v-if="editingPost && editingPost.id === post.id">
-                <!-- Edit Form -->
-                <input v-model="editingPost.title" class="form-control mb-2" />
-                <textarea v-model="editingPost.content" class="form-control mb-2" rows="3"></textarea>
-                <div>
-                    <button @click="savePostChanges" class="savebtn btn btn-success me-2">Save Changes</button>
-                    <button @click="cancelEdit" class="cancelbtn btn btn-secondary">Cancel</button>
-                </div>
+              <!-- Edit Form -->
+              <input v-model="editingPost.title" class="form-control mb-2" />
+              <textarea v-model="editingPost.content" class="form-control mb-2" rows="3"></textarea>
+              <div>
+                <button @click="savePostChanges" class="savebtn btn btn-success me-2">Save Changes</button>
+                <button @click="cancelEdit" class="cancelbtn btn btn-secondary">Cancel</button>
+              </div>
             </template>
 
             <!-- Post Content Area -->
             <h5 class="card-title">{{ post.title }}</h5>
             <div class="d-flex justify-content-between mb-3">
               <div>
-                <span class="badge user-badge">{{ post.author }}</span>
+                <span class="badge user-badge" :style="{ backgroundColor: getUserColor(post.author) }">{{ post.author }}</span>
                 <small class="text-muted">
                   {{ new Date(post.timestamp.seconds * 1000).toLocaleString() }} · {{ post.category }}
                 </small>
@@ -96,38 +97,40 @@
                 <span class="ms-2">{{ post.likes.length }}</span>
               </span>
 
-              
               <!-- Comment button with icon -->
               <span class="ms-3" @click="toggleComments(post.id)" style="cursor: pointer; display: flex; align-items: center;">
                 <i class="fas fa-comment"></i>
                 <span class="ms-2">{{ post.comments.length }}</span>
               </span>
-
-              
             </div>
 
             <!-- Comments Section (only shows when 'showComments' is true) -->
             <div v-if="post.showComments" class="comment-section mt-3">
-              <!-- Scrollable comments list -->
               <div class="comments-list">
                 <div v-for="comment in post.comments" :key="comment.id" class="comment mb-2">
-                  <span class="badge user-badge">{{ comment.author }}</span>
-                    <small class="text-muted ms-2">
-                      {{ new Date(comment.timestamp.seconds * 1000).toLocaleString() }}
-                    </small>
+                  <span class="badge user-badge" :style="{ backgroundColor: getUserColor(comment.author) }">{{ comment.author }}</span>
+                  <small class="text-muted ms-2">{{ new Date(comment.timestamp.seconds * 1000).toLocaleString() }}</small>
                   <p>{{ comment.content }}</p>
+
+                  <!-- Comment dropdown for deletion -->
+                  <div v-if="user && user.displayName === comment.author" class="comment-dropdown">
+                    <button class="comment-dropdown-btn">⋮</button>
+                    <div class="comment-dropdown-content">
+                      <button @click="deleteComment(post.id, comment.id)">Delete</button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <!-- Add Comment Section -->
               <div class="add-comment-section mt-2">
                 <textarea v-model="post.newComment" placeholder="Write a comment..." class="form-control"></textarea>
-                <button class="btn btn-primary mt-2" @click="addComment(post.id)">Post Comment</button>
+                <button class="btn btn-primary mt-2" @click="addComment(post.id)" style="background-color: #00A3E0; border: 0cm;">Post Comment</button>
               </div>
             </div>
 
-            <!-- Comment Count in Bottom Right Corner -->
-            <div class="text-end text-muted mt-2" style="font-size: 0.85em;">
+            <!-- Comment Count to Toggle Comment Section -->
+            <div class="text-end text-muted mt-2" style="font-size: 0.85em; cursor: pointer;" @click="toggleComments(post.id)">
               {{ post.comments.length }} {{ post.comments.length === 1 ? "Comment" : "Comments" }}
             </div>
           </div>
@@ -139,7 +142,7 @@
 
   
 <script>
-import { getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs, doc, query, orderBy, Timestamp, where, deleteDoc} from 'firebase/firestore';
+import { getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs, doc, query, orderBy, Timestamp, where, deleteDoc, arrayRemove} from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
   
   export default {
@@ -157,6 +160,11 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
             selectedCategory: "All",
             user: null, 
             editingPost: null,
+            userColors: {},
+            availableColors: [
+              "#FFB6C1", "#ADD8E6", "#90EE90", "#FFD700", "#FF6347", "#7B68EE",
+              "#FF69B4", "#8A2BE2", "#5F9EA0", "#FF4500", "#DA70D6", "#20B2AA"
+            ],
         };
     },
     methods: {
@@ -306,18 +314,56 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
         const db = getFirestore();
         const post = this.posts.find(p => p.id === postId);
         const newComment = {
+          id: Date.now().toString(), // Unique ID for each comment
           author: this.currentUsername,
           content: post.newComment,
           timestamp: Timestamp.now(),
         };
-  
+
         await updateDoc(doc(db, 'forumPosts', postId), {
           comments: arrayUnion(newComment),
         });
-  
+
         post.comments.push(newComment);
         post.newComment = '';
       },
+
+      async deleteComment(postId, commentId) {
+        const db = getFirestore();
+        const postRef = doc(db, 'forumPosts', postId);
+        const post = this.posts.find((p) => p.id === postId);
+
+        // Find the comment to delete based on its unique ID
+        const commentToDelete = post.comments.find((comment) => comment.id === commentId);
+
+        if (commentToDelete) {
+          try {
+            // Remove the specific comment from Firestore
+            await updateDoc(postRef, {
+              comments: arrayRemove(commentToDelete),
+            });
+
+            // Update the local state to remove the comment
+            post.comments = post.comments.filter((comment) => comment.id !== commentId);
+            console.log(`Comment with ID ${commentId} deleted successfully`);
+          } catch (error) {
+            console.error('Error deleting comment:', error);
+          }
+        }
+      },
+
+      toggleCommentDropdown(comment) {
+        comment.showDropdown = !comment.showDropdown;
+      },
+      getUserColor(username) {
+
+      if (!this.userColors[username]) {
+        
+        const randomIndex = Math.floor(Math.random() * this.availableColors.length);
+        this.userColors[username] = this.availableColors[randomIndex];
+      }
+      return this.userColors[username];
+    },
     },
     mounted() {
         const auth = getAuth();
@@ -331,15 +377,33 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
                 console.log("No user is logged in.");
             }
         });
+
+        const savedColors = JSON.parse(localStorage.getItem('userColors'));
+        if (savedColors) {
+          this.userColors = savedColors;
+        }
+
+        // Save userColors to localStorage on change
+        this.$watch(
+          () => this.userColors,
+          (newColors) => {
+            localStorage.setItem('userColors', JSON.stringify(newColors));
+          },
+          { deep: true }
+        );
     },
   };
 </script>
   
+
 <style scoped>
 
-body {
-    background-color: #f4f4f9;
-    font-family: 'Poppins', sans-serif;
+.bg{
+  background-color: #E5E4E2;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .custom-like-btn, .custom-comment-btn {
@@ -348,10 +412,11 @@ body {
 
 .card {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color:#F0F4F8;
 }
 
 .user-badge {
-    background-color: #007bff;
+  background-color:#1b87ae ;
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
@@ -372,24 +437,25 @@ body {
   width: 200px; /* Fixed width for the sidebar */
   height: calc(100vh - 80px); /* Full height minus the navbar */
   padding: 20px;
-  background-color: #f4f4f9; /* Background color for sidebar */
-  overflow-y: auto; /* Allow scrolling within the sidebar if content overflows */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow */
-  z-index: 1000; /* Ensure it stays above the content while scrolling */
+  background-color:#F0F4F8; 
+  overflow-y: auto; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  z-index: 1000; 
+
 }
 
 /* Main content area with margin to the left to accommodate the sidebar */
 .forum-content {
-  margin-left: 220px; /* Space to accommodate the fixed sidebar */
+  margin-left: 220px;
   padding: 20px;
   width: 100%;
 }
 
 /* Basic styling for posts */
 .forum-post {
-  background: #fff;
+  background: #DDEAF2;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 20px;
 }
@@ -427,9 +493,9 @@ body {
 }
 
 .comments-list {
-  max-height: 300px; /* Adjust the height as needed */
+  max-height: 300px; 
   overflow-y: auto;
-  padding-right: 5px; /* Optional: space for scrollbar */
+  padding-right: 5px; 
 }
 
 .comment {
@@ -467,7 +533,7 @@ body {
 }
 
 .list-group-item.active {
-  background-color: #007bff;
+  background-color:#00A3E0 ;
   color: white;
   font-weight: bold;
 }
@@ -530,5 +596,61 @@ body {
   display: block;
 }
 
+.comment {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  position: relative; /* Ensure that child elements can be absolutely positioned relative to this */
+}
+
+.comment-dropdown {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.comment-dropdown-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
+}
+
+.comment-dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%; /* Position it below the button */
+  background-color: white;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.comment-dropdown-content button {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.comment-dropdown-content button:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show dropdown on hover or focus */
+.comment-dropdown:hover .comment-dropdown-content,
+.comment-dropdown:focus-within .comment-dropdown-content {
+  display: block;
+}
+
 </style>
-  
+
+
+

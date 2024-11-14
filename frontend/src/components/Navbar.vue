@@ -38,6 +38,9 @@
       </svg>
     </button>
 
+    <!-- Overlay for closing the menu when clicking outside -->
+    <div class="menu-overlay" v-if="isMenuOpen" @click="closeMenu"></div>
+
   </nav>
 </template>
 
@@ -223,5 +226,14 @@ const closeMenu = () => {
     /* Adjust spacing for mobile */
   }
 
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
 }
 </style>

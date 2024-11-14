@@ -88,6 +88,8 @@ export default {
         });
 
         this.successMessage = "Account created successfully!";
+        
+        this.$router.push("/")
       } catch (error) {
         this.errorMessage = error.message;
       }

@@ -10,8 +10,8 @@ const MONGODB_URI = `mongodb+srv://Nickyking:${DBPASSWORD}@cluster0.hv6jw.mongod
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,  // Set server selection timeout
-  socketTimeoutMS: 45000,         // Set socket timeout
+  serverSelectionTimeoutMS: 30000,  // Set server selection timeout
+  socketTimeoutMS: 60000,         // Set socket timeout
 })
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Error connecting to MongoDB:', error));

@@ -3,11 +3,17 @@
     <!-- Flashcards Container -->
     <div class="container mt-4">
       <h2 class="deck-title">Deck: {{ deckTitle }}</h2>
-      <div id="flashcards-container">
-        <div v-if="flashcards.length">
-          <div v-for="card in flashcards" :key="card.id" class="flashcard">
-            <button class="delete-btn" @click="confirmDeleteFlashcard(card.id)">&times;</button>
-            <div class="flashcard-content">
+      
+      <!-- Flashcards Grid -->
+      <div class="row mb-5" v-if="flashcards.length">
+        <div
+          v-for="card in flashcards"
+          :key="card.id"
+          class="col-12 col-lg-6 mb-4"
+        >
+          <div class="flashcard card p-3 shadow-sm position-relative">
+            <button class="delete-btn btn-close" @click="confirmDeleteFlashcard(card.id)">&times;</button>
+            <div class="flashcard-content d-flex justify-content-between">
               <div class="flashcard-front">
                 <span class="label">Q:</span>
                 <p class="content">{{ card.f1 }}</p>
@@ -19,14 +25,19 @@
             </div>
           </div>
         </div>
-        <p v-else>No flashcards available.</p>
       </div>
+      
+      <p v-else>No flashcards available.</p>
     </div>
 
     <!-- Floating Buttons -->
-    <button class="floating-btn2" @click="goBack">Back</button>
-    <button class="study-btn" @click="goToStudyPage">Study</button>
-    <button class="floating-btn" @click="openAddFlashcardModal">+</button>
+    <button class="floating-btn2 btn btn-primary" @click="goBack">< Back To Decks</button>
+    <button class="study-btn btn btn-success" @click="goToStudyPage">Study</button>
+    <button class="floating-btn btn btn-info" @click="openAddFlashcardModal">
+      <svg class="pluslogo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 12H18M12 6V18" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
 
     <!-- Modal for Adding Flashcards -->
     <div class="modal fade" id="addFlashcardModal" tabindex="-1" aria-labelledby="addFlashcardModalLabel" aria-hidden="true">
@@ -46,7 +57,7 @@
                 <label for="back" class="form-label">Back</label>
                 <input type="text" v-model="newFlashcard.back" class="form-control" required>
               </div>
-              <button type="submit" class="btn btn-primary">Add Card</button>
+              <button type="submit" class="btn btn-primary" style="background-color: #00A3E0; border: 0cm;">Add Card</button>
             </form>
           </div>
         </div>
@@ -188,28 +199,24 @@ body {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 10px;
-  margin-bottom: 15px;
-  display: flex;
-  justify-content: space-between;
   position: relative;
 }
+
 .flashcard-content {
   display: flex;
-  width: 100%;
   gap: 20px;
 }
-.flashcard-front {
-  border-right: 1px solid #ccc;
+
+.flashcard-front, .flashcard-back {
   width: 50%;
 }
-.flashcard-back {
-  width: 50%;
-}
+
 .label {
   font-size: 0.8rem;
   font-weight: bold;
   color: #555;
 }
+
 .content {
   font-size: 1rem;
   font-weight: 500;
@@ -219,15 +226,25 @@ body {
 
 /* Delete Button */
 .delete-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
   background: none;
   border: none;
-  color: #ff4d4d;
-  font-size: 18px;
-  cursor: pointer;
-  position: absolute; 
-  top: 5px;
-  right: 5px; 
+  color: #fe3d3d;
+  cursor: pointer;padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+
 }
+
+.delete-btn:focus ,.delete-btn:active{
+  outline: none; 
+  box-shadow: none; 
+}
+
 .delete-btn:hover {
   color: #ff0000;
 }
@@ -237,19 +254,28 @@ body {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #8A704C;
-  color: white;
+  background-color: #00A3E0;;
   border: none;
   border-radius: 50%;
   width: 55px;
   height: 55px;
-  font-size: 2em;
+  line-height: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
+.pluslogo{
+    width: 30px;
+    height: 30px;
+  }
+
+
+.floating-btn:hover {
+  background-color:#0b8ebe;
+}
+
 .floating-btn2 {
   position: fixed;
   bottom: 20px;
@@ -261,15 +287,14 @@ body {
   cursor: pointer;
   transition: background-color 0.3s;
   margin: 0 10px;
-  background-color: #3b82f6;
   color: white;
+  font-weight: bold;
+  background-color: #3b82f6;
 }
   
-.floating-btn2 {
+.floating-btn2:hover{
   background-color: #2563eb;
 }
-
-
 
 .study-btn {
   position: fixed;
@@ -283,6 +308,7 @@ body {
   border-radius: 8px;
   font-size: 1.2em;
   cursor: pointer;
+  font-weight: bold;
 }
 .study-btn:hover {
   background-color: #45a049;
@@ -294,10 +320,13 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .modal-header {
-  background-color: #007bff;
+  background-color: #85D7FF ;
   color: white;
 }
 .modal-title {
   font-weight: bold;
 }
+
+
+
 </style>

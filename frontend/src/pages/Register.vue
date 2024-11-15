@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 export default {
@@ -110,16 +110,9 @@ export default {
         });
 
         // Success message
-        this.successMessage = "Account created successfully! Redirecting you to login...";
-        this.loading = false; // Stop loading after success
-
-        // Sign the user out
-        await signOut(auth);
-
-        // Redirect to login page after a short delay
-        setTimeout(() => {
-          this.$router.push("/sign-in");
-        }, 2000);
+        this.successMessage = "Account created successfully!";
+        
+        this.$router.push("/");
       } catch (error) {
         this.errorMessage = error.message;
         this.loading = false; // Stop loading if there's an error

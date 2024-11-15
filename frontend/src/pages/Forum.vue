@@ -1,5 +1,6 @@
 <template>
   <div class="bg">
+    
     <div class="container-fluid mt-4 d-flex">
       <!-- Sidebar (Categories) -->
       <div class="categories-sidebar col-lg-2 col-md-3 mb-4">
@@ -14,6 +15,8 @@
             <li class="list-group-item" @click="setCategory('SOL')" :class="{ active: selectedCategory === 'SOL' }">SOL</li>
             <li class="list-group-item" @click="setCategory('SOB')" :class="{ active: selectedCategory === 'SOB' }">SOB</li>
             <li class="list-group-item" @click="setCategory('SOSS')" :class="{ active: selectedCategory === 'SOSS' }">SOSS</li>
+            <li class="list-group-item" @click="setCategory('SOE')" :class="{ active: selectedCategory === 'SOE' }">SOE</li>
+            <li class="list-group-item" @click="setCategory('CIS')" :class="{ active: selectedCategory === 'CIS' }">CIS</li>
           </ul>
         </div>
       </div>
@@ -43,6 +46,8 @@
                   <option value="SOL">SOL</option>
                   <option value="SOB">SOB</option>
                   <option value="SOSS">SOSS</option>
+                  <option value="SOE">SOE</option>
+                  <option value="CIS">CIS</option>
                 </select>
               </div>
               <button type="submit" class="btn btn-primary" style="background-color: #00A3E0; border: 0cm;">Post</button>
@@ -649,6 +654,17 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 .comment-dropdown:focus-within .comment-dropdown-content {
   display: block;
 }
+
+
+@media (max-width: 768px) {
+  .categories-sidebar {
+    display: none;
+  }
+  .forum-content {
+    margin-left: 0; /* Ensure the main content fills the width */
+  }
+}
+
 
 </style>
 

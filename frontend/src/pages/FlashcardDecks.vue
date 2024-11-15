@@ -155,7 +155,7 @@ export default {
       if (user) {
         this.loadDecks(user.uid);
       } else {
-        this.$router.push("/login");
+        this.$router.push("/sign-in");
       }
     });
 

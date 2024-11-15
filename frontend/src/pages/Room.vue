@@ -40,6 +40,7 @@ import { joinRoomInit, leaveRoom } from "../services/AgoraService";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../firebase.js';
 
+const auth = getAuth();
 
 export default {
   components: {

@@ -374,7 +374,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
                 console.log("User UID:", this.user.uid); 
                 this.loadPosts();
             } else {
-                console.log("No user is logged in.");
+              this.$router.push('/sign-in');
             }
         });
 

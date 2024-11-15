@@ -38,10 +38,18 @@ const routes = [
     name: 'Flashcards',
     component: () => import('../pages/Flashcards.vue')
   },
-  {path: '/study', name: 'StudyPage', component: StudyPage},
-  {path: '/forum',name: 'Forum',component: Forum,},
-  {path: '/room',name: 'Room',component: Room,},
-  {path: '/lobby',name: 'Lobby',component: Lobby,},
+  {path: '/study', name: 'StudyPage', component: StudyPage, meta: {
+    requireAuth: true,
+  }},
+  {path: '/forum',name: 'Forum',component: Forum, meta: {
+    requireAuth: true,
+  }},
+  {path: '/room',name: 'Room',component: Room, meta: {
+    requireAuth: true,
+  }},
+  {path: '/lobby',name: 'Lobby',component: Lobby, meta: {
+    requireAuth: true,
+  }},
 
   
 ];
@@ -72,7 +80,7 @@ router.beforeEach(async (to, from, next) => {
       next();
     } else{
       alert("you dont have access!");
-      next("/sign-up")
+      next("/sign-in")
     }
   } else{
     next();

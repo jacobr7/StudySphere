@@ -47,7 +47,8 @@ export default {
                   this.updateParticipantCounts();
                   setInterval(this.updateParticipantCounts, 5000); // Refresh counts every 5 seconds
               } else {
-                  console.log("No user is logged in.");
+                this.$router.push("/sign-in");
+
               }
           });
   },

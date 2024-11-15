@@ -3,7 +3,7 @@
     <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
       <div class="text-center mb-3">
         <!---->
-        <img src="..\assets\SSLogo.jpeg" alt="Logo" class="img-fluid" style="max-width: 100px;">
+        <img src="../assets/images/StudySphere.svg" alt="Logo" class="img-fluid" style="max-width: 100px;">
         <!---->
       </div>
       <h3 class="text-center mb-4">Create a User Account</h3>
@@ -174,7 +174,7 @@ small {
 }
 
 .bg-cover{
-  background: url('../assets/downloads2.webp') no-repeat center center fixed;
+  background: url('../assets/images/register.jpg') no-repeat center center fixed;
     background-size: cover;
     margin : 0;
     width: 100vw;

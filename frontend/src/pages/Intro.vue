@@ -26,7 +26,7 @@
         </div>
 
         <div class="carousel-intro-item">
-          <img src="../assets/images/event3.png" alt="Ellipsis Hackathon" />
+          <img src="../assets/images/event3.png" alt="Career Fair" />
         </div>
       </div>
     </section>

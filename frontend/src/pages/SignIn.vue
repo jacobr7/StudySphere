@@ -28,7 +28,7 @@
               />
             </div>
             <p v-if="errMsg" class="text-danger">{{ errMsg }}</p>
-            <button type="submit" class="btn btn-primary w-100">Submit</button>
+            <button type="submit" class="btn w-100">Submit</button>
           </form>
         </div>
       </div>
@@ -75,12 +75,17 @@
   <style scoped>
   /* Additional styles can go here if needed */
   .bg-cover {
-    background: url('../assets/background.jpg') no-repeat center center fixed;
+    background: url('../assets/images/login.png') no-repeat center center fixed;
     background-size: cover;
     margin : 0;
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 80px);
     overflow-x: hidden;  /* Hide any overflow to the right */
+}
+
+.btn {
+  background-color: #00A3E0;
+  color: white;
 }
 
   </style>

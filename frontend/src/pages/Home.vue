@@ -93,8 +93,10 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+const auth = getAuth();
+
 
 export default {
   name: 'Home',
@@ -122,8 +124,14 @@ export default {
     },
   },
   mounted() {
-    this.fetchEvents();
-  },
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.fetchEvents();
+        } else {
+          this.$router.push('/intro');
+        }
+      });
+},
   methods: {
     async fetchEvents() {
       try {
